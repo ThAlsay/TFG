@@ -1,0 +1,11 @@
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    network_mode: 'host'
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=gamedb
+      - POSTGRES_PASSWORD=1234
+    volumes:
+      - ./docker/data:/var/lib/postgresql/data

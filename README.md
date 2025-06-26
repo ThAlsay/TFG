@@ -1,4 +1,8 @@
-# TfgUmbrella
+# Hephaestus
 
-**TODO: Add description**
+### Install
 
+```
+cd tfg_umbrella
+iex -S mix
+```

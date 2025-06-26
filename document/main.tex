@@ -1,0 +1,52 @@
+\documentclass[a4paper,12pt,twoside,onecolumn,openright,svgnames]{book}
+
+% Paquetes varios
+\usepackage{graphicx}
+
+% PDF/A-1b
+\usepackage[a-1b]{pdfx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
+
+% Márgenes
+\usepackage{geometry}
+\geometry{
+	top=1.5cm,
+	bottom=1.5cm,
+	inner=1.5cm,
+	outer=2cm
+}
+
+% Espaciado interlineal
+\usepackage{setspace}
+\setstretch{1.2}
+
+% Justificación completa y sangría de párrafos
+\usepackage{ragged2e}
+\justifying
+\setlength{\parindent}{0.5cm}
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[LE,RO]{\thepage}
+
+% Documento
+\begin{document}	
+	\frontmatter
+		\include{tex_files/frontmatter/title}
+		\include{tex_files/frontmatter/resumen}
+		\tableofcontents
+		\listoffigures
+		\listoftables
+		
+	\mainmatter
+		\include{tex_files/mainmatter/cap_1/objetivo}
+		
+		\bibliographystyle{unsrt}
+		\bibliography{refs}
+		
+		
+\end{document}
