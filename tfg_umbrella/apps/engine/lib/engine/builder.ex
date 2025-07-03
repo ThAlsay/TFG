@@ -69,8 +69,6 @@ defmodule Engine.Builder do
     saved_user = Engine.User |> Engine.Repo.get(name)
 
     Engine.Builder.create(%{"character" => saved_user.character}, supervisor)
-
-    :ok
   end
 
   defp init_connections(array, s) do

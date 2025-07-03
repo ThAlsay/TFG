@@ -1,4 +1,9 @@
 services:
+  game:
+    image: game:latest
+    restart: always
+    network_mode: 'host'
+
   db:
     image: postgres:latest
     restart: always

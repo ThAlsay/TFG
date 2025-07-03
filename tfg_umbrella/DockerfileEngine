@@ -1,0 +1,31 @@
+FROM elixir:alpine AS build
+
+RUN apk add --update git
+
+RUN mkdir -p /app/deps
+RUN mkdir /config
+WORKDIR /app
+
+RUN mix do local.hex --force, local.rebar --force
+
+ENV MIX_ENV=prod
+
+COPY apps/game/mix.exs /app/
+COPY config/config.exs /config/
+RUN mix deps.get
+RUN mix deps.compile
+
+COPY apps/engine/lib lib
+RUN mix compile
+RUN mix release
+
+FROM elixir:alpine
+
+ENV MIX_ENV=prod
+
+RUN mkdir /engine
+WORKDIR /engine
+
+COPY --from=build /_build/prod/rel/engine .
+
+CMD [ "./bin/engine", "start" ]

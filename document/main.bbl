@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{elixir}
 {The Elixir team}.
@@ -11,5 +11,79 @@
 \newblock Dungeons and dragons.
 \newblock \url{https://dnd.wizards.com/es}, 2025.
 \newblock [Online; accessed 22-June-2025].
+
+\bibitem{phoenix}
+The~Phoenix framework team.
+\newblock Phoenix framework.
+\newblock \url{https://www.phoenixframework.org/}, 2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{java}
+{Oracle}.
+\newblock Java.
+\newblock \url{https://www.java.com/es/}, 2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{docker}
+{The docker team}.
+\newblock Docker.
+\newblock \url{https://www.docker.com/}, 2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{kubernetes}
+{The linux foundation}.
+\newblock Kubernetes.
+\newblock \url{https://kubernetes.io/es/}, 2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{sql}
+{Wikipedia}.
+\newblock Sql.
+\newblock \url{https://en.wikipedia.org/wiki/SQL}, 2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{json}
+{Douglas Crockford}.
+\newblock Json.
+\newblock \url{https://www.json.org/json-en.html}, 2001.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{javascript}
+{Mozilla foundation}.
+\newblock Javascript.
+\newblock \url{https://developer.mozilla.org/es/docs/Web/JavaScript}, 2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{postgres}
+{The postgresql team}.
+\newblock Postgresql.
+\newblock \url{https://www.postgresql.org/}, 2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{agile_scrum}
+{cprime}.
+\newblock What is scrum.
+\newblock \url{https://www.cprime.com/resources/what-is-agile-what-is-scrum/},
+  2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{scrum_events}
+{Mary Iqbal}.
+\newblock Which scrum events are time boxed?
+\newblock
+  \url{https://www.scrum.org/resources/blog/which-scrum-events-are-time-boxed},
+  2024.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{scrum_artifacts}
+{Chandler Harris}.
+\newblock Agile scrum artifacts.
+\newblock \url{https://www.atlassian.com/agile/scrum/artifacts}, 2025.
+\newblock [Online; accessed 01-July-2025].
+
+\bibitem{hughes2009software}
+Bob Hughes.
+\newblock {\em Software Project Management 5e}.
+\newblock McGraw Hill, 2009.
 
 \end{thebibliography}

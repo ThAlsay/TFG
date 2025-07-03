@@ -3,7 +3,7 @@ defmodule Engine.Location do
 
   @enforce_keys [:objects, :connections]
   @derive Jason.Encoder
-  defstruct objects: [], connections: [], enemy: nil, npc: nil
+  defstruct objects: [], connections: [], enemy: [], npc: nil
 
   def start_link(default) do
     name = default["name"]
@@ -54,6 +54,10 @@ defmodule Engine.Location do
 
   def add_enemy(name, element) do
     GenServer.cast(name, {:add_enemy, element})
+  end
+
+  def remove_enemy(name, element) do
+    GenServer.cast(name, {:remove_enemy, element})
   end
 
   @impl true
@@ -142,7 +146,20 @@ defmodule Engine.Location do
 
   @impl true
   def handle_cast({:add_enemy, element}, state) do
-    new_state = %{state | enemy: element}
+    enemies = state.enemy
+    enemies = [element | enemies]
+
+    new_state = %{state | enemy: enemies}
+
+    {:noreply, new_state}
+  end
+
+  @impl true
+  def handle_cast({:remove_enemy, enemy}, state) do
+    new_state = %{
+      state
+      | enemy: Enum.filter(state.enemy, fn element -> element !== enemy end)
+    }
 
     {:noreply, new_state}
   end

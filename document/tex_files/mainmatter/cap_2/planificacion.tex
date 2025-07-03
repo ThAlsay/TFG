@@ -1,0 +1,268 @@
+\chapter{Planificación}\label{Cap2}
+
+\section{Tecnologías}
+En todo proyecto de ingeniería informática se utilizan una gran variedad de tecnologías para diferentes partes del proyecto. Todas estas tecnologías tienen que ser definidas antes de dar comienzo al proyecto y forman parte de la planificación del mismo. En este proyecto, las tecnologías que han sido elegidas para su ejecución son las siguientes:
+\\
+\begin{itemize}
+	\item \textbf{Elixir}: Lenguaje de programación utilizado para la construcción del motor y el juego.
+	\item \textbf{Java}: Lenguaje de programación utilizado para la construcción de los escenarios de aprendizaje.
+	\item \textbf{Docker}: Programa para la construcción y gestión de contenedores docker.
+	\item \textbf{SQL}: Lenguaje de consulta sobre bases de datos relacionales.
+	\item \textbf{JSON}: Formato de intercambio de datos.
+	\item \textbf{Postgresql}: Base de datos relacional opensource.
+\end{itemize}
+
+\subsection{Elixir}
+Sobre \textit{Elixir} ya se ha hablado en la introducción. Es un lenguaje de programación que ofrece unas características que lo hacen especialmente apto para el diseño y programación de sistemas distribuidos. Sigue el paradigma de programación funcional y está diseñado para ser implementado en una arquitectura modular.
+\\
+
+Ofrece tolerancia al fallo, la capacidad de distribuir los módulos en diferentes sistemas mediante la propia API del lenguaje, hot swaping y una alta escalabilidad. Todas estas características le han hecho posicionarse como un lenguaje muy interesante en el mundo de la programación web, gracias al framework de desarrollo de aplicaciones web Phoenix \cite{phoenix}.
+
+\subsection{Java}
+\textit{Java} \cite{java} es un lenguaje de programación diseñado para seguir el paradigma de programación orientada a objetos y cuyas fortalezas residen en:
+\begin{itemize}
+	\item \textbf{Independiente de la plataforma}: \textit{Java} es un lenguaje de programación compilado. El resultado de los lenguaje compilados, tradicionalmente, está sujeto a la arquitectura del sistema operativo en el que se compila y, por ejemplo, un binario de un lenguaje compilado en Windows no se puede ejecutar en Linux. \textit{Java} toma otro acercamiento y se ejecuta sobre una máquina virtual, la \textit{JVM (Java Virtual Machine)}. Gracias a esto, el resultado de la compilación es un binario que se puede ejecutar sobre cualquier \textit{JVM} independientemente del sistema operativo sobre el que se ejecute. El único requisito es que el sistema operativo sobre el que se ejecuta el programa tiene que tener instalada la máquina virtual de \textit{Java}.
+	\item \textbf{Fuertemente tipado}: Los lenguajes de programación fuertemente tipados evitan la asignación de valores a variables cuando el tipo de ambos no coincide y obligan a asignarle un tipo a cada variable, no pudiendo haber variables sin tipo hasta que se las asigna un valor. Esto evita errores durante la programación que puedan llevar al programa a fallar durante la ejecución.
+	\item \textbf{Recolector de basura}: \textit{Java} cuenta con un recolector de basura. El recolector de basura es un mecanismo que tienen algunos lenguajes de programación que permite liberar espacio de memoria de manera automática en tiempo de ejecución. Para ello el recolector de basura libera el espacio ocupado por variables que ya han sido utilizadas y no tienen uso en el futuro de la ejecución.
+	\item \textbf{Amplia comunidad}: Es un lenguaje utilizado en multitud de sistemas que aún siguen en funcionamiento y, pese a su antigüedad, sigue siendo escogido por multitud de empresas y personas. Esto hace que \textit{Java} cuente con una gran comunidad de programadores e ingenieros y por consiguiente se pueden encontrar una gran cantidad de recursos para cualquier necesidad que pueda surgir durante un proyecto.
+\end{itemize}
+
+\subsection{Docker}
+Anteriormente se ha mencionado la portabilidad de \textit{Java} y la escalabilidad de \textit{Elixir}, ambas de estas características se pueden ver reforzadas mediante \textit{Docker} \cite{docker}. \textit{Docker} es un sistema de gestión y ejecución de contenedores. Un contenedor es una pieza de software que simula un sistema operativo reducido dentro del mismo y permite ejecutar programas dentro de este sistema operativo en miniatura empleando los recursos del sistema operativo donde se ejecuta el contenedor. Esto le permite a \textit{Docker} contar con varias ventajas a la hora de distribuir programas a servidores o usuarios:
+\begin{itemize}
+	\item \textbf{Control de versiones}: Al crear un contenedor este tiene la capacidad de otorgarle una etiqueta con la versión de la que se trata. Esto permite que el cambio de versiones consista únicamente en actualizar la etiqueta del contenedor dentro del fichero en el que se encuentra la definición del contenedor.
+	\item \textbf{Portabilidad}: Los contenedores se pueden ejecutar en cualquier sistema con \textit{Docker} instalado.
+	\item \textbf{Escalabilidad}: Existen tecnologías que permiten la duplicación de contenedores, el balance de carga sobre contenedores duplicados y creación y destrucción automática de contenedores. Una de las tecnologías más populares que permite esto es \textit{Kubernetes} \cite{kubernetes}.
+\end{itemize}
+
+En este proyecto \textit{Docker} permite simular un sistema distribuido dentro de una sola máquina gracias a que ejecuta pequeños sistemas operativos.
+
+\subsection{SQL}
+\textit{SQL} \cite{sql} es un lenguaje de programación de dominio específico diseñado para gestionar datos estructurados en sistemas de gestión de bases de datos o RDBMS por sus siglas en inglés.
+\\
+
+En este proyecto se emplea para hacer uso de la base de datos desde el propio motor, en la cual se persiste el estado del juego y sus jugadores.
+
+\subsection{JSON}
+\textit{JSON (JavaScript Object Notation)} \cite{json} es un formato de intercambio de datos diseñado para poder ser legible para los humanos. Basado en un subconjunto de \textit{JavaScript} \cite{javascript}, es completamente independiente a este y puede ser empleado para transmitir datos entre diferentes lenguajes de programación.
+\\
+
+Dentro del proyecto es el lenguaje empleado para comunicar los escenarios con el juego y también es empleado para almacenar algunos campos en la base de datos.
+
+\subsection{Postgresql}
+\textit{Postgresql} \cite{postgres} se trata de una base de datos relacional de código abierto que utiliza y extiende \textit{SQL} para ofrecer una gran variedad de tipos de datos para el almacenamiento, robustez, integridad de los datos, seguridad y rendimiento.
+\\
+
+Para el proyecto, el empleo de \textit{Postgresql} como base de datos permite el almacenamiento de datos tipo \textit{JSON} gracias al tipo proporcionado JSONB, que a su vez permite realizar operaciones sobre los campos de los datos tipo \textit{JSON} y un almacenaje de los mismos empleando menos espacio en el disco duro.
+
+\section{Planificación}
+\subsection{Metodología ágil: Scrum}
+Las metodologías ágiles de desarrollo software se basan en el desarrollo iterativo del mismo. Por lo general, las metodologías ágiles promueven la constante revisión del software creado, trabajo en equipo y la intención de crear productos funcionales de manera rápida, adaptándose a las necesidades del cliente \cite{agile_scrum} \cite{scrum_events} \cite{scrum_artifacts}.
+\\
+
+Scrum es una de las metodologías ágiles más en uso en la actualidad. Adopta un enfoque incremental e iterativo dividiendo los proyectos en pequeñas partes las cuales se desarrollan y entregan a lo largo de periodos de tiempo definidos, los cuales se denominan Sprints.
+\\
+
+Esta metodología se caracteriza por su capacidad de adaptación a los cambios y es muy adecuada para proyectos que presentan gran incertidumbre a la hora de ser desarrollados, es decir, que pueden estar sujetos a muchos cambios durante el desarrollo y necesitan de retroalimentación constante para mitigar la complejidad del proyecto.
+\\
+
+Para la implementación de Scrum este cuenta con tres componentes claves: roles, eventos y artefactos.
+
+\subsubsection{Roles}
+Scrum define tres roles dentro del equipo de trabajo:
+\begin{itemize}
+	\item \textbf{Product Owner}: Es el miembro del equipo encargado de mantener la comunicación entre el equipo de desarrollo y las partes interesadas que quieran cambiar o añadir al producto. Es el responsable de mantener el seguimiento del producto y de gestionar la prioridad que tienen las nuevas características y la solución de errores del mismo. Por ello es importante el hacer caso a las indicaciones del Product Owner, ya que es el único miembro del equipo con una visión global del producto y el cual recibe retroalimentación de diversas fuentes externas al equipo de desarrollo.
+	\item \textbf{Scrum Master}: Es el encargado de que el equipo siga la metodología Scrum sin complicaciones eliminando complicaciones que puedan suponer un retraso o impactar en la productividad de todo el equipo.
+	\item \textbf{Equipo de desarrollo}: El resto de miembros del equipo. Se encargan de crear los artefactos necesarios para completar un Sprint. Pueden tener multitud de habilidad diferentes pero tienen que ser capaces de repartir el trabajo entre los miembros y como partir el artefacto en otros más pequeños.
+\end{itemize}
+
+\subsubsection{Eventos}
+Scrum emplea eventos para inspeccionar y adaptar los artefactos, crear regularidad y minimizar gasto de tiempo en reuniones innecesarias. Los eventos definidos por Scrum son los siguientes:
+\begin{itemize}
+	\item \textbf{Sprint}: Es el evento más importante ya que contiene al resto de eventos dentro del mismo. No puede durar más de un mes y está diseñado para alcanzar el objetivo de incremento para el producto. Durante la ejecución del mismo no se puede modificar el objetivo final del evento, por lo tanto este tiene que ser razonable para el periodo de tiempo que abarca el Sprint.
+	\item \textbf{Sprint Planning}: Es el primer evento dentro del propio evento de Sprint. En él se planea todo lo relacionado con el producto durante el tiempo que va a durar el Sprint. Está diseñado para evitar la sobreplanificación, limitándose a un máximo de 8 horas invertidas en este evento.
+	\item \textbf{Daily Scrum}: Es el evento más corto, con un máximo de 15 minutos recomendados. Se realiza todos los días con el objetivo de revisar el progreso y ajustar el plan para alcanzar el objetivo del Sprint. No es la única oportunidad diaria para reunirse entre los miembros del equipo, estos siempre se podrán reunir para discutir temas más detallados.
+	\item \textbf{Sprint Review}: Evento realizado al finalizar el Sprint con el fin de presentar los resultados del mismo y discutir el progreso hacía el objetivo del producto. También permite ajustar el producto en base a oportunidades que hayan podido presentarse durante el Sprint.
+	\item \textbf{Sprint Retrospective}: Con un máximo de 3 horas de duración, el objetivo de este evento es reflexionar sobre las dinámicas de equipo y planificar formas de mejorar estas así como la calidad y la eficacia durante el próximo Sprint.
+\end{itemize}
+
+\subsubsection{Artefactos}
+En la metodología Scrum un artefacto se refiere a todo aquello que defina el producto que se está desarrollando, las acciones que producen el producto y las acciones que ya han sido tomadas para la creación del producto. Scrum define tres artefactos principales:
+\begin{itemize}
+	\item \textbf{Product Backlog}: Es una lista de nuevas características, mejoras y arreglos del producto. También incluye las tareas y los requisitos para construir el producto. Se alimenta de muchas fuentes relacionadas con el producto como pueden ser los reportes de bugs, los análisis de mercado o las demandas del mercado. El Product Owner se encarga de que este artefacto se encuentre actualizado y sea correcto.
+	\item \textbf{Sprint Backlog}: Es un conjunto de Product Backlogs escogidos para formar parte del siguiente incremento del producto. Está conformado por tareas que surgen de dividir tareas más grandes de los diferentes Product Backlogs que lo conforman con el fin de poder planificar el reparto de las mismas por el equipo de desarrollo.
+	\item \textbf{Product Increment}: Estos artefactos se forman completando tareas definidas mediante los otros artefactos. Incluye los incrementos del resto de Sprints y se crean al decidir realizar un despliegue de producto para los usuarios. Son muy útiles para seguir la versión del producto.
+\end{itemize}
+
+\subsection{Adaptación al proyecto}
+Se elige Scrum para el proyecto debido a la capacidad de generar artefactos rápidamente adaptándose a los cambios que surjan. Esto es especialmente útil ya que es un proyecto que cuenta con tres piezas de software diferentes dependientes entre sí y las tecnologías empleadas son nuevas para mí por lo tanto una rápida iteración permite la refactorización del código a menudo.
+\\
+
+Scrum es una metodología pensada para equipos de trabajo sobre proyectos grandes, pero eso no significa que no se pueda adaptar para que funcione con proyectos más pequeños y una sola persona.
+\\
+
+Debido a que solo se encuentra una persona trabajando en el proyecto toda reunión referente a comunicación entre miembros del equipo no se realiza y todos los roles quedan asignados a la misma persona. A partir de aquí la definición de Sprints funciona de la misma forma que funcionaría en un equipo más grande, se define que incremento que corresponde al Sprint, las fechas en las que está activo el Sprint y la retroalimentación proporcionada por el cliente, en este caso el tutor del proyecto.
+
+\subsection{Planificación inicial}
+Con el fin de realizar el proyecto en un plazo lógico para las circunstancias en las que se encuentra el ejecutor del mismo se realiza una planificación inicial de 9 Sprints con 2 semanas de duración aproximadas para cada uno. Cada Sprint cuenta con una cantidad de trabajo variable pero que siempre se ajusta a un trabajo semanal de entre 15 y 20 horas, lo que da entre 30 y 40 horas de trabajo por Sprint.
+\\
+
+El primer Sprint es un poco mas largo que el resto debido a que se caracteriza por que los artefactos que genera son todos relacionados con la investigación del proyecto. Este Sprint está enfocado en la búsqueda de todas las piezas necesarias para la ejecución del proyecto, desde diseño de juegos hasta documentación sobre los lenguajes de programación así como librerías que puedan ser de utilidad para facilitar el desarrollo del software planeado.
+\\
+
+La previsión inicial del proyecto cuenta con 9 Sprints de los cuales a 8 de ellos se les puede estimar un promedio de 35 horas de trabajo mientras que el primero de todos, al ser un poco más largo se le puede estimar 40 horas de trabajo, dando una estimación total de 320 horas de trabajo.
+\\
+
+En caso de que ocurran imprevistos se han añadido dos Sprints extra sumando un promedio de 70 horas extra más al proyecto que, de ser utilizadas, aumentarían la estimación de tiempo del proyecto hasta un total de 390 horas.
+\\
+
+En la tabla \ref{tabla-sprints} se muestra la previsión de las fechas de ejecución del Sprints planificados y las fechas de los eventos relacionados con cada Sprint.
+\begin{longtable}[c]{|c|cc|}
+	\hline
+	\rowcolor[HTML]{C0C0C0} 
+	{\color[HTML]{000000} \textbf{Nº Sprint/Eventos}}                                                 & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}{\color[HTML]{000000} \textbf{Fecha Inicio}}} & {\color[HTML]{000000} \textbf{Fecha Fin}} \\ \hline
+	\endfirsthead
+	%
+	\endhead
+	%
+	Sprint 0                                                                                          & \multicolumn{1}{c|}{13/02/2025}                                                           & 27/02/2025                                \\ \hline
+	Sprint Planning                                                                                   & \multicolumn{2}{c|}{13/02/2025}                                                                                                       \\ \hline
+	Sprint Weekly                                                                                     & \multicolumn{2}{c|}{20/02/2025}                                                                                                       \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{27/02/2025}                                                                                                       \\ \hline
+	Sprint 1                                                                                          & \multicolumn{1}{c|}{27/02/2025}                                                           & 13/03/2025                                \\ \hline
+	Sprint Weekly                                                                                     & \multicolumn{2}{c|}{06/03/2025}                                                                                                       \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{13/03/2025}                                                                                                       \\ \hline
+	Sprint 2                                                                                          & \multicolumn{1}{c|}{14/03/2025}                                                           & 27/03/2025                                \\ \hline
+	Sprint Weekly                                                                                     & \multicolumn{2}{c|}{20/03/2025}                                                                                                       \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{27/03/2025}                                                                                                       \\ \hline
+	Sprint 3                                                                                          & \multicolumn{1}{c|}{28/03/2025}                                                           & 10/04/2025                                \\ \hline
+	Sprint Weekly                                                                                     & \multicolumn{2}{c|}{03/04/2025}                                                                                                       \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{10/04/2025}                                                                                                       \\ \hline
+	Sprint 4                                                                                          & \multicolumn{1}{c|}{11/04/2025}                                                           & 24/04/2025                                \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{24/04/2025}                                                                                                       \\ \hline
+	Sprint 5                                                                                          & \multicolumn{1}{c|}{25/04/2025}                                                           & 08/05/2025                                \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{08/05/2025}                                                                                                       \\ \hline
+	Sprint 6                                                                                          & \multicolumn{1}{c|}{09/05/2025}                                                           & 22/05/2025                                \\ \hline
+	Sprint Weekly                                                                                     & \multicolumn{2}{c|}{15/05/2025}                                                                                                       \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{22/05/2025}                                                                                                       \\ \hline
+	Sprint 7                                                                                          & \multicolumn{1}{c|}{23/05/2025}                                                           & 05/06/2025                                \\ \hline
+	Sprint Weekly                                                                                     & \multicolumn{2}{c|}{29/05/2025}                                                                                                       \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{05/06/2025}                                                                                                       \\ \hline
+	Sprint 8                                                                                          & \multicolumn{1}{c|}{06/06/2025}                                                           & 19/06/2025                                \\ \hline
+	Sprint Weekly                                                                                     & \multicolumn{2}{c|}{12/06/2025}                                                                                                       \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{19/06/2025}                                                                                                       \\ \hline
+	Sprint 9                                                                                          & \multicolumn{1}{c|}{20/06/2025}                                                           & 03/07/2025                                \\ \hline
+	Sprint Weekly                                                                                     & \multicolumn{2}{c|}{26/06/2025}                                                                                                       \\ \hline
+	\begin{tabular}[c]{@{}c@{}}Sprint Weekly, Sprint Planning \\ y Sprint Restrospective\end{tabular} & \multicolumn{2}{c|}{03/07/2025}                                                                                                       \\ \hline
+	Sprint Extra 1                                                                                    & \multicolumn{1}{c|}{04/07/2025}                                                           & 17/07/2025                                \\ \hline
+	Sprint Extra 2                                                                                    & \multicolumn{1}{c|}{18/07/2025}                                                           & 31/07/2025                                \\ \hline
+	\caption{Planificación inicial de Sprints}
+	\label{tabla-sprints}
+\end{longtable}
+
+\section{Plan de riesgos}
+Un riesgo \cite{hughes2009software} es una situación potencial que puede acarrear un retraso en el proyecto o lo puede acelerar. Todo riesgo tiene un posibilidad de ocurrir y un impacto sobre el proyecto. Es natural que cualquier proyecto que sea ejecutado esté expuesto a una serie de riesgos que modifiquen los tiempos de ejecución del mismo ya que toda planificación de un proyecto está basada en estimaciones y sujeta a incertidumbres.
+\\
+
+Una vez establecidos los tiempos de ejecución de los Sprints para el proyecto es necesario analizar los riesgos que pueden ocurrir durante el transcurso del mismo. Debido al tiempo, solo se analizan los riesgos que tengan un desenlace negativo. De esta forma se pueden establecer planes de contingencia para mitigar los efectos de estos riesgos y no retrasar la ejecución del proyecto.
+\\
+
+Todo riesgo identificado en este plan de riesgos está formado por los siguientes cuatro elementos:
+\begin{itemize}
+	\item \textbf{Probabilidad}: Nivel de posibilidad de que el riesgo suceda. Puede ser muy baja, baja, media, alta o muy alta.
+	\item \textbf{Impacto}: Nivel del impacto que tiene el daño producido en caso de que el riesgo suceda sobre la ejecución del proyecto. Al igual que la probabilidad puede ser muy bajo, bajo, medio, alto o muy alto.
+	\item \textbf{Plan de mitigación}: Lista de acciones que se pueden tomar para reducir la probabilidad de que le riesgo suceda.
+	\item \textbf{Plan de contingencia}: Lista de acciones que se pueden llevar a cabo una vez el riesgo ha sucedido para reducir el impacto sobre los tiempos de ejecución del proyecto.
+\end{itemize}
+
+El plan de riesgos es fundamental en la planificación de un proyecto debido a que permiten identificar situaciones evitables que podrían poner en riesgo la correcta ejecución del proyecto. A su vez, permite establecer protocolos para mitigar los efectos adversos en caso de que se manifieste alguno de los riesgos.
+\\
+
+Las tablas desde la \ref{riesgo_1} hasta la muestran los riesgos identificados que pueden afectar al proyecto.
+
+\begin{table}[!htbp]
+	\centering
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\rowcolor[HTML]{C0C0C0} 
+		\textbf{Riesgo R01}  & \textbf{Falta de disponibilidad}                                                                                                                                                                                                                                                                                    \\ \hline
+		Descripción          & Durante la duración del proyecto tanto el alumno que actúa como equipo Scrum como el tutor que actúa como usuario pueden tener variaciones en la disponibilidad haciendo que se tenga que volver a planificar los Sprints para ajustarse a las nuevas circunstancias.\\ \hline
+		Probabilidad         & Media                                                                                                                                                                                                                                                                                                               \\ \hline
+		Impacto              & Medio                                                                                                                                                                                                                                                                                                               \\ \hline
+		Plan de mitigación   & \csname @minipagetrue\endcsname \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+			\item Evitar situaciones que puedan poner en riesgo la salud o la integridad física.
+		\end{itemize} \\ \hline
+		Plan de contingencia & \csname @minipagetrue\endcsname \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+			\item Distribuir las tareas no finalizadas en otros Sprints estableciendo prioridades para las tareas más importantes.
+			\item Considerar tomar vacaciones en el trabajo para dedicarle más tiempo al proyecto.
+		\end{itemize} \\ \hline
+	\end{tabularx}
+	\caption{Riesgo R01}
+	\label{riesgo_1}
+\end{table}
+
+\begin{table}[]
+	\centering
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\rowcolor[HTML]{C0C0C0} 
+		\textbf{Riesgo R02}  & \textbf{Fallos en el hardware de trabajo}                                                                                                                                                                                                             \\ \hline
+		Descripción          & Todo equipo electrónico puede llegar a fallar, lo que puede suponer retrasos y perdida de información.                                                                                                                                                \\ \hline
+		Probabilidad         & Baja                                                                                                                                                                                                                                                  \\ \hline
+		Impacto              & Muy alto                                                                                                                                                                                                                                              \\ \hline
+		Plan de mitigación   & \csname @minipagetrue\endcsname \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+			\item Disponer de un dispositivo de repuesto.
+			\item Realizar copias de seguridad de todo lo relacionado con el proyecto de forma habitual.
+			\item Instalar sistemas SAI para evitar perder datos ante un corte de luz.
+		\end{itemize} \\ \hline
+		Plan de contingencia & \csname @minipagetrue\endcsname \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+			\item Recuperar las copias de seguridad, de existir, en otro dispositivo.
+			\item En caso de archivos corruptos intentar usar programas de recuperación para este tipo de archivos.
+		\end{itemize} \\ \hline
+	\end{tabularx}
+	\caption{Riesgo R02}
+	\label{riesgo_2}
+\end{table}
+
+\begin{table}[]
+	\centering
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\rowcolor[HTML]{C0C0C0} 
+		\textbf{Riesgo R03}  & \textbf{Error en la estimación de tiempo para las actividades a desarrollar} \\ \hline
+		Descripción          & Las estimaciones de tiempo para alguna tarea resultan ser incorrectas y esta requiere de mayor cantidad de tiempo para su correcta realización provocando un retraso en la planificación del proyecto. \\ \hline
+		Probabilidad         & Alta \\ \hline
+		Impacto              & Alto \\ \hline
+		Plan de mitigación   & \csname @minipagetrue\endcsname \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+			\item Realizar análisis en profundidad de las tareas para obtener estimaciones más precisas.
+			\item Dar prioridad a las partes del proyecto que resulten críticas.
+			\item Prever tiempo extra que pueda llevar la ejecución del proyecto teniendo Sprints extra.
+		\end{itemize} \\ \hline
+		Plan de contingencia & \csname @minipagetrue\endcsname \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+			\item Utilizar los Sprints extra previstos para este riesgo.
+			\item Reorganizar el proyecto eliminando partes no importantes de manera que su objetivo principal no se vea afectado.
+		\end{itemize} \\ \hline
+	\end{tabularx}
+	\caption{Riesgo R03}
+	\label{riesgo_3}
+\end{table}
+
+\begin{table}[]
+	\centering
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\rowcolor[HTML]{C0C0C0} 
+		\textbf{Riesgo R04}  & \textbf{Mala utilización de Scrum} \\ \hline
+		Descripción          & Debido a que el equipo de desarrollo no tiene experiencia previa con la metodología Scrum se puede hacer un mal uso de la misma llevando a que se produzcan artefactos innecesarios y se prioricen las tareas de manera incorrecta. \\ \hline
+		Probabilidad         & Media \\ \hline
+		Impacto              & Medio \\ \hline
+		Plan de mitigación   & \csname @minipagetrue\endcsname \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+			\item Estudio intensivo de la metodología.
+		\end{itemize} \\ \hline
+		Plan de contingencia & \csname @minipagetrue\endcsname \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+			\item Compensar con los Sprints extra retrasos que puedan suceder.
+		\end{itemize} \\ \hline
+	\end{tabularx}
+	\caption{Riesgo R04}
+	\label{riesgo_4}
+\end{table}

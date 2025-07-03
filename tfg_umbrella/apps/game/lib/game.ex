@@ -1,18 +1,8 @@
 defmodule Game do
-  @moduledoc """
-  Documentation for `Game`.
-  """
+  require Logger
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Game.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def start() do
+    Engine.Builder.init_game("prueba", :main_supervisor)
+    Logger.info("Game started")
   end
 end

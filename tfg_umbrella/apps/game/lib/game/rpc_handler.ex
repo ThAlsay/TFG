@@ -8,9 +8,44 @@ defmodule Game.RpcHandler do
         "method" => "start",
         "id" => id
       }) do
-    Engine.Builder.init_game("prueba", :main_supervisor)
+    Game.start()
 
     response_wrapper("game started", id)
+  end
+
+  def handle_rpc_request(%{
+        "jsonrpc" => "2.0",
+        "method" => "save",
+        "id" => id
+      }) do
+    Engine.Db.safe_game("prueba")
+
+    response_wrapper("game saved", id)
+  end
+
+  def handle_rpc_request(%{
+        "jsonrpc" => "2.0",
+        "method" => "inspect_character",
+        "id" => id
+      }) do
+    loc_state = String.to_atom("prueba") |> Engine.Character.get_state()
+
+    response_wrapper(
+      %{
+        level: loc_state.level,
+        experience: loc_state.exp,
+        inventory: loc_state.inventory,
+        armor: %{
+          head: loc_state.head,
+          body: loc_state.body,
+          arms: loc_state.arms,
+          legs: loc_state.legs,
+          feet: loc_state.feet
+        },
+        weapon: loc_state.weapon
+      },
+      id
+    )
   end
 
   def handle_rpc_request(%{
@@ -48,6 +83,27 @@ defmodule Game.RpcHandler do
       response_wrapper("object #{object_name} picked", id)
     else
       response_wrapper("object #{object_name} is not in this location", id)
+    end
+  end
+
+  def handle_rpc_request(%{
+        "jsonrpc" => "2.0",
+        "method" => "equip_object",
+        "params" => %{"object" => object_name},
+        "id" => id
+      }) do
+    character_state = String.to_atom("prueba") |> Engine.Character.get_state()
+
+    if(Enum.member?(character_state.inventory, object_name)) do
+      object_type = String.to_atom(object_name) |> Engine.Object.get_type()
+      String.to_atom("prueba") |> Engine.Character.equip_object(object_name, object_type)
+
+      response_wrapper(
+        "object #{object_name} has been equiped in the #{object_type} character slot",
+        id
+      )
+    else
+      response_wrapper("object not in the character inventory", id)
     end
   end
 

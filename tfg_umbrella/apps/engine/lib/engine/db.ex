@@ -31,7 +31,7 @@ defmodule Engine.Db do
     saved_user = Engine.User |> Engine.Repo.get(user)
 
     character_name = saved_user.character["name"]
-    new_character = Engine.Character.get_state(character_name)
+    new_character = String.to_atom(character_name) |> Engine.Character.get_state()
 
     Engine.User.changeset(
       saved_user,
@@ -155,7 +155,7 @@ defmodule Engine.Db do
   defp get_connection_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = Engine.Connection.get_state(h["name"])
+      state = String.to_atom(h["name"]) |> Engine.Connection.get_state()
 
       result = [
         %Engine.GameEntity{name: h["name"], state: state} | result
@@ -170,10 +170,10 @@ defmodule Engine.Db do
   defp get_object_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = Engine.Object.get_state(h)
+      state = String.to_atom(h["name"]) |> Engine.Object.get_state()
 
       result = [
-        %Engine.GameEntity{name: h, state: state} | result
+        %Engine.GameEntity{name: h["name"], state: state} | result
       ]
 
       get_object_states(t, result)
@@ -185,10 +185,10 @@ defmodule Engine.Db do
   defp get_enemy_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = Engine.Enemy.get_state(h)
+      state = String.to_atom(h["name"]) |> Engine.Enemy.get_state()
 
       result = [
-        %Engine.GameEntity{name: h, state: state} | result
+        %Engine.GameEntity{name: h["name"], state: state} | result
       ]
 
       get_enemy_states(t, result)
@@ -200,10 +200,10 @@ defmodule Engine.Db do
   defp get_location_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = Engine.Location.get_state(h)
+      state = String.to_atom(h["name"]) |> Engine.Location.get_state()
 
       result = [
-        %Engine.GameEntity{name: h, state: state} | result
+        %Engine.GameEntity{name: h["name"], state: state} | result
       ]
 
       get_location_states(t, result)
@@ -215,10 +215,10 @@ defmodule Engine.Db do
   defp get_npc_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = Engine.Npc.get_state(h)
+      state = String.to_atom(h["name"]) |> Engine.Npc.get_state()
 
       result = [
-        %Engine.GameEntity{name: h, state: state} | result
+        %Engine.GameEntity{name: h["name"], state: state} | result
       ]
 
       get_npc_states(t, result)
