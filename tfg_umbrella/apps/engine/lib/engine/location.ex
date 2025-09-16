@@ -1,19 +1,48 @@
 defmodule Engine.Location do
   use GenServer
 
+  @moduledoc """
+  Definition of an engine location.
+  """
+
   @enforce_keys [:objects, :connections]
   @derive Jason.Encoder
   defstruct objects: [], connections: [], enemy: [], npc: nil
 
-  def start_link(default) do
-    name = default["name"]
-    init_arg = default["state"]
+  def start_link(%Engine.GameEntity{name: name, state: state}) do
+    GenServer.start_link(__MODULE__, state,
+      name: {:global, Engine.Utilities.advanced_to_atom(name)}
+    )
+  end
 
-    if name === nil or init_arg === nil do
-      {:error, "Error creating location. Name or initial state missing"}
-    else
-      GenServer.start_link(__MODULE__, init_arg, name: String.to_atom(name))
-    end
+  def start_link(init_config) do
+    name =
+      cond do
+        is_map(init_config) and not is_struct(init_config) ->
+          Map.get(init_config, "name") || Map.get(init_config, :name)
+
+        match?(%__MODULE__{}, init_config) ->
+          init_config.name
+
+        true ->
+          nil
+      end
+
+    init_arg =
+      cond do
+        is_map(init_config) and not is_struct(init_config) ->
+          Map.get(init_config, "state") || Map.get(init_config, :state)
+
+        match?(%__MODULE__{}, init_config) ->
+          init_config.state
+
+        true ->
+          nil
+      end
+
+    GenServer.start_link(__MODULE__, init_arg,
+      name: {:global, Engine.Utilities.advanced_to_atom(name)}
+    )
   end
 
   def get_state(name) do
@@ -56,18 +85,13 @@ defmodule Engine.Location do
     GenServer.cast(name, {:add_enemy, element})
   end
 
-  def remove_enemy(name, element) do
-    GenServer.cast(name, {:remove_enemy, element})
+  @impl true
+  def init(%Engine.Location{} = initial_state) do
+    {:ok, initial_state}
   end
 
   @impl true
-  def init(initial_state) when is_struct(initial_state) do
-    state = struct!(Engine.Location, initial_state)
-    {:ok, state}
-  end
-
-  @impl true
-  def init(initial_state) when is_map(initial_state) do
+  def init(initial_state) when is_map(initial_state) and not is_struct(initial_state) do
     state = %Engine.Location{
       objects: initial_state["objects"],
       connections: initial_state["connections"],
@@ -104,7 +128,12 @@ defmodule Engine.Location do
 
   @impl true
   def handle_call(:get_enemy, _from, state) do
-    {:reply, state.enemy, state}
+    response =
+      Enum.filter(state.enemy, fn ene ->
+        Engine.Enemy.is_alive?({:global, Engine.Utilities.advanced_to_atom(ene)})
+      end)
+
+    {:reply, response, state}
   end
 
   @impl true
@@ -150,16 +179,6 @@ defmodule Engine.Location do
     enemies = [element | enemies]
 
     new_state = %{state | enemy: enemies}
-
-    {:noreply, new_state}
-  end
-
-  @impl true
-  def handle_cast({:remove_enemy, enemy}, state) do
-    new_state = %{
-      state
-      | enemy: Enum.filter(state.enemy, fn element -> element !== enemy end)
-    }
 
     {:noreply, new_state}
   end

@@ -1,16 +1,62 @@
 services:
+  enemies:
+    image: engine:latest
+    restart: always
+    container_name: enemies_node
+    depends_on:
+      - db
+    environment:
+      - RELEASE_DISTRIBUTION=sname
+      - RELEASE_NODE=node1@enemies_node
+      - RELEASE_COOKIE=cookienotansecreta
+    networks:
+      - elixir_net
+
+  character:
+    image: engine:latest
+    restart: always
+    container_name: character_node
+    depends_on:
+      - db
+    environment:
+      - RELEASE_DISTRIBUTION=sname
+      - RELEASE_NODE=node2@character_node
+      - RELEASE_COOKIE=cookienotansecreta
+    networks:
+      - elixir_net
+    
   game:
     image: game:latest
     restart: always
-    network_mode: 'host'
+    container_name: game_node
+    depends_on:
+      - db
+      - enemies
+      - character
+    environment:
+      - RELEASE_DISTRIBUTION=sname
+      - RELEASE_NODE=node3@game_node
+      - RELEASE_COOKIE=cookienotansecreta
+    ports:
+      - 3000:3000
+    networks:
+      - elixir_net
 
   db:
     image: postgres:latest
+    container_name: database
     restart: always
-    network_mode: 'host'
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_DB=gamedb
       - POSTGRES_PASSWORD=1234
     volumes:
       - ./docker/data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - elixir_net
+
+networks:
+  elixir_net:
+    driver: bridge

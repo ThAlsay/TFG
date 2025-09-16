@@ -1,6 +1,10 @@
 defmodule Engine.Enemy do
   use GenServer
 
+  @moduledoc """
+  Definition of an engine enemy
+  """
+
   @enforce_keys [:health, :attack_type]
   @derive Jason.Encoder
   defstruct level: 1,
@@ -14,15 +18,40 @@ defmodule Engine.Enemy do
             attack_type: "",
             reward: 100
 
-  def start_link(default) do
-    name = default["name"]
-    init_arg = default["state"]
+  def start_link(%Engine.GameEntity{name: name, state: state}) do
+    GenServer.start_link(__MODULE__, state,
+      name: {:global, Engine.Utilities.advanced_to_atom(name)}
+    )
+  end
 
-    if name === nil or init_arg === nil do
-      {:error, "Error creating enemy. Name or initial state missing"}
-    else
-      GenServer.start_link(__MODULE__, init_arg, name: String.to_atom(name))
-    end
+  def start_link(init_config) do
+    name =
+      cond do
+        is_map(init_config) and not is_struct(init_config) ->
+          Map.get(init_config, "name") || Map.get(init_config, :name)
+
+        match?(%__MODULE__{}, init_config) ->
+          init_config.name
+
+        true ->
+          nil
+      end
+
+    init_arg =
+      cond do
+        is_map(init_config) and not is_struct(init_config) ->
+          Map.get(init_config, "state") || Map.get(init_config, :state)
+
+        match?(%__MODULE__{}, init_config) ->
+          init_config.state
+
+        true ->
+          nil
+      end
+
+    GenServer.start_link(__MODULE__, init_arg,
+      name: {:global, Engine.Utilities.advanced_to_atom(name)}
+    )
   end
 
   def get_state(name) do
@@ -41,8 +70,16 @@ defmodule Engine.Enemy do
     GenServer.call(name, :get_level)
   end
 
+  def get_attack_type(name) do
+    GenServer.call(name, :get_attack_type)
+  end
+
+  def get_reward(name) do
+    GenServer.call(name, :get_reward)
+  end
+
   def attack(name) do
-    GenServer.call(name, :attack)
+    GenServer.call(name, :get_attack_type)
   end
 
   def is_alive?(name) do
@@ -58,13 +95,12 @@ defmodule Engine.Enemy do
   end
 
   @impl true
-  def init(initial_state) when is_struct(initial_state) do
-    state = struct!(Engine.Enemy, initial_state)
-    {:ok, state}
+  def init(%Engine.Enemy{} = initial_state) do
+    {:ok, initial_state}
   end
 
   @impl true
-  def init(initial_state) when is_map(initial_state) do
+  def init(initial_state) when is_map(initial_state) and not is_struct(initial_state) do
     state = %Engine.Enemy{
       level: initial_state["level"],
       charisma: initial_state["charisma"],
@@ -110,8 +146,17 @@ defmodule Engine.Enemy do
   end
 
   @impl true
-  def handle_call(:attack, _from, state) do
+  def handle_call(:get_attack_type, _from, state) do
     {:reply, state.attack_type, state}
+  end
+
+  @impl true
+  def handle_call(:get_reward, _from, state) do
+    if state.health < 1 do
+      {:reply, state.reward, state}
+    else
+      {:reply, 0, state}
+    end
   end
 
   @impl true
@@ -125,27 +170,31 @@ defmodule Engine.Enemy do
 
   @impl true
   def handle_call(:get_attack_damage, _from, state) do
-    case state.attack_type do
-      "charisma" ->
-        {:reply, state.charisma, state}
+    if state.health > 0 do
+      case state.attack_type do
+        "charisma" ->
+          {:reply, state.charisma, state}
 
-      "wisdom" ->
-        {:reply, state.wisdom, state}
+        "wisdom" ->
+          {:reply, state.wisdom, state}
 
-      "intelligence" ->
-        {:reply, state.intelligence, state}
+        "intelligence" ->
+          {:reply, state.intelligence, state}
 
-      "constitution" ->
-        {:reply, state.constitution, state}
+        "constitution" ->
+          {:reply, state.constitution, state}
 
-      "dexterity" ->
-        {:reply, state.dexterity, state}
+        "dexterity" ->
+          {:reply, state.dexterity, state}
 
-      "strength" ->
-        {:reply, state.strength, state}
+        "strength" ->
+          {:reply, state.strength, state}
 
-      _ ->
-        {:reply, 1, state}
+        _ ->
+          {:reply, 1, state}
+      end
+    else
+      {:reply, 0, state}
     end
   end
 

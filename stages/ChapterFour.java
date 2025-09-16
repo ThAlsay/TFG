@@ -8,86 +8,65 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-public class ChapterThree {
-  public static void main(String[] args) throws IOException {
+public class ChapterFour {
+  public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
     Gson jsonParser = new Gson();
 
+    travel(jsonParser);
     inspectLocation(jsonParser);
-    pickObject(jsonParser);
+    interactWithNpc(jsonParser);
+    travel(jsonParser);
     inspectLocation(jsonParser);
-    getCharacterStatus(jsonParser);
-    equipObject(jsonParser);
     getCharacterStatus(jsonParser);
   }
 
-  private static void inspectLocation(Gson jsonParser) throws IOException {
-    Socket socket = new Socket("localhost", 3000);
-
-    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+  private static void interactWithNpc(Gson jsonParser) throws IOException, InterruptedException, ExecutionException {
+    HashMap<String, String> params = new HashMap<String, String>();
+    params.put("npc", "sabio");
 
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
-    mapa.put("method", "inspect_current_location");
+    mapa.put("method", "interact");
+    mapa.put("params", params);
     mapa.put("id", "1");
 
-    out.println(jsonParser.toJson(mapa));
+    ExecutorService executor = Executors.newFixedThreadPool(20);
+    List<Future<String>> futures = new ArrayList<>();
 
-    HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {
-    }.getType());
+    for (int i = 0; i < 11; i++) {
+      Callable<String> task = () -> {
+        Socket socket = new Socket("localhost", 3000);
 
-    printServerResult(respuesta);
-    socket.close();
-  }
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-  private static void pickObject(Gson jsonParser) throws IOException {
-    Socket socket = new Socket("localhost", 3000);
+        out.println(jsonParser.toJson(mapa));
 
-    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(),
+            new TypeToken<HashMap<String, Object>>() {
+            }.getType());
 
-    HashMap<String, String> params = new HashMap<String, String>();
-    params.put("object", "espada");
+        socket.close();
+        return respuesta.toString();
+      };
 
-    HashMap<String, Object> mapa = new HashMap<String, Object>();
-    mapa.put("jsonrpc", "2.0");
-    mapa.put("method", "take_object");
-    mapa.put("params", params);
-    mapa.put("id", "2");
+      futures.add(executor.submit(task));
+    }
 
-    out.println(jsonParser.toJson(mapa));
+    for (Future<String> future : futures) {
+      System.out.println(future.get());
+    }
 
-    HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {
-    }.getType());
-
-    printServerResult(respuesta);
-    socket.close();
-  }
-
-  private static void equipObject(Gson jsonParser) throws IOException {
-    Socket socket = new Socket("localhost", 3000);
-
-    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-    HashMap<String, String> params = new HashMap<String, String>();
-    params.put("object", "espada");
-
-    HashMap<String, Object> mapa = new HashMap<String, Object>();
-    mapa.put("jsonrpc", "2.0");
-    mapa.put("method", "equip_object");
-    mapa.put("params", params);
-    mapa.put("id", "3");
-
-    out.println(jsonParser.toJson(mapa));
-
-    HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {
-    }.getType());
-
-    printServerResult(respuesta);
-    socket.close();
+    executor.shutdown();
   }
 
   private static void getCharacterStatus(Gson jsonParser) throws IOException {
@@ -99,6 +78,50 @@ public class ChapterThree {
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
     mapa.put("method", "inspect_character");
+    mapa.put("id", "2");
+
+    out.println(jsonParser.toJson(mapa));
+
+    HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {
+    }.getType());
+
+    printServerResult(respuesta);
+    socket.close();
+  }
+
+  private static void inspectLocation(Gson jsonParser) throws IOException {
+    Socket socket = new Socket("localhost", 3000);
+
+    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+    HashMap<String, Object> mapa = new HashMap<String, Object>();
+    mapa.put("jsonrpc", "2.0");
+    mapa.put("method", "inspect_current_location");
+    mapa.put("id", "3");
+
+    out.println(jsonParser.toJson(mapa));
+
+    HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {
+    }.getType());
+
+    printServerResult(respuesta);
+    socket.close();
+  }
+
+  private static void travel(Gson jsonParser) throws IOException {
+    Socket socket = new Socket("localhost", 3000);
+
+    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+    HashMap<String, String> params = new HashMap<String, String>();
+    params.put("connection", "corredor_cueva_2");
+
+    HashMap<String, Object> mapa = new HashMap<String, Object>();
+    mapa.put("jsonrpc", "2.0");
+    mapa.put("method", "cross_connection");
+    mapa.put("params", params);
     mapa.put("id", "4");
 
     out.println(jsonParser.toJson(mapa));

@@ -1,6 +1,10 @@
 defmodule Engine.Character do
   use GenServer
 
+  @moduledoc """
+  Definition of an engine character.
+  """
+
   @derive Jason.Encoder
   defstruct level: 1,
             charisma: 1,
@@ -22,15 +26,40 @@ defmodule Engine.Character do
             current_location: "",
             in_combat: false
 
-  def start_link(default) do
-    name = default["name"]
-    init_arg = default["state"]
+  def start_link(%Engine.GameEntity{name: name, state: state}) do
+    GenServer.start_link(__MODULE__, state,
+      name: {:global, Engine.Utilities.advanced_to_atom(name)}
+    )
+  end
 
-    if name === nil or init_arg === nil do
-      {:error, "Error creating character. Name or initial state missing"}
-    else
-      GenServer.start_link(__MODULE__, init_arg, name: String.to_atom(name))
-    end
+  def start_link(init_config) do
+    name =
+      cond do
+        is_map(init_config) and not is_struct(init_config) ->
+          Map.get(init_config, "name") || Map.get(init_config, :name)
+
+        match?(%__MODULE__{}, init_config) ->
+          init_config.name
+
+        true ->
+          nil
+      end
+
+    init_arg =
+      cond do
+        is_map(init_config) and not is_struct(init_config) ->
+          Map.get(init_config, "state") || Map.get(init_config, :state)
+
+        match?(%__MODULE__{}, init_config) ->
+          init_config.state
+
+        true ->
+          nil
+      end
+
+    GenServer.start_link(__MODULE__, init_arg,
+      name: {:global, Engine.Utilities.advanced_to_atom(name)}
+    )
   end
 
   def get_state(name) do
@@ -69,6 +98,10 @@ defmodule Engine.Character do
     GenServer.call(name, :get_attack_damage)
   end
 
+  def get_inventory(name) do
+    GenServer.call(name, :get_inventory)
+  end
+
   def add_exp(name, exp) do
     GenServer.cast(name, {:add_exp, exp})
   end
@@ -94,13 +127,12 @@ defmodule Engine.Character do
   end
 
   @impl true
-  def init(initial_state) when is_struct(initial_state) do
-    state = struct!(Engine.Character, initial_state)
-    {:ok, state}
+  def init(%Engine.Character{} = initial_state) do
+    {:ok, initial_state}
   end
 
   @impl true
-  def init(initial_state) when is_map(initial_state) do
+  def init(initial_state) when is_map(initial_state) and not is_struct(initial_state) do
     state = %Engine.Character{
       level: initial_state["level"],
       charisma: initial_state["charisma"],
@@ -181,11 +213,16 @@ defmodule Engine.Character do
   @impl true
   def handle_call(:get_attack_damage, _from, state) do
     if state.weapon !== nil do
-      value = String.to_atom(state.weapon) |> Engine.Object.get_value()
+      value = Engine.Object.get_value({:global, Engine.Utilities.advanced_to_atom(state.weapon)})
       {:reply, 1 + value, state}
     else
       {:reply, 1, state}
     end
+  end
+
+  @impl true
+  def handle_call(:get_inventory, _from, state) do
+    {:reply, state.inventory, state}
   end
 
   @impl true
@@ -197,10 +234,10 @@ defmodule Engine.Character do
         state.level === 1 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 300 do
+          if total_exp >= Engine.Constants.first_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 300}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.first_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -210,10 +247,10 @@ defmodule Engine.Character do
         state.level === 2 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 900 do
+          if total_exp >= Engine.Constants.second_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 900}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.second_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -223,10 +260,10 @@ defmodule Engine.Character do
         state.level === 3 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 2700 do
+          if total_exp >= Engine.Constants.third_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 2700}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.third_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -236,10 +273,10 @@ defmodule Engine.Character do
         state.level === 4 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 6500 do
+          if total_exp >= Engine.Constants.fourth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 6500}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.fourth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -249,10 +286,10 @@ defmodule Engine.Character do
         state.level === 5 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 14000 do
+          if total_exp >= Engine.Constants.fifth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 14000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.fifth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -262,10 +299,10 @@ defmodule Engine.Character do
         state.level === 6 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 23000 do
+          if total_exp >= Engine.Constants.sixth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 23000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.sixth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -275,10 +312,10 @@ defmodule Engine.Character do
         state.level === 7 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 34000 do
+          if total_exp >= Engine.Constants.seventh_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 34000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.seventh_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -288,10 +325,10 @@ defmodule Engine.Character do
         state.level === 8 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 48000 do
+          if total_exp >= Engine.Constants.eigth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 48000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.eigth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -301,10 +338,10 @@ defmodule Engine.Character do
         state.level === 9 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 64000 do
+          if total_exp >= Engine.Constants.ninth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 64000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.ninth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -314,10 +351,10 @@ defmodule Engine.Character do
         state.level === 10 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 85000 do
+          if total_exp >= Engine.Constants.tenth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 85000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.tenth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -327,10 +364,10 @@ defmodule Engine.Character do
         state.level === 11 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 100_000 do
+          if total_exp >= Engine.Constants.eleventh_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 100_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.eleventh_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -340,10 +377,10 @@ defmodule Engine.Character do
         state.level === 12 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 120_000 do
+          if total_exp >= Engine.Constants.twelfth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 120_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.twelfth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -353,10 +390,10 @@ defmodule Engine.Character do
         state.level === 13 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 140_000 do
+          if total_exp >= Engine.Constants.thirteenth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 140_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.thirteenth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -366,10 +403,10 @@ defmodule Engine.Character do
         state.level === 14 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 165_000 do
+          if total_exp >= Engine.Constants.fourteenth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 165_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.fourteenth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -379,10 +416,10 @@ defmodule Engine.Character do
         state.level === 15 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 195_000 do
+          if total_exp >= Engine.Constants.fifteenth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 195_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.fifteenth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -392,10 +429,10 @@ defmodule Engine.Character do
         state.level === 16 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 225_000 do
+          if total_exp >= Engine.Constants.sixteenth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 225_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.sixteenth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -405,10 +442,10 @@ defmodule Engine.Character do
         state.level === 17 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 265_000 do
+          if total_exp >= Engine.Constants.seventeenth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 265_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.seventeenth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -418,10 +455,10 @@ defmodule Engine.Character do
         state.level === 18 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 305_000 do
+          if total_exp >= Engine.Constants.eighteenth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 305_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.eighteenth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}
@@ -431,10 +468,10 @@ defmodule Engine.Character do
         state.level === 19 ->
           total_exp = state.exp + quantity
 
-          if total_exp >= 355_000 do
+          if total_exp >= Engine.Constants.nineteenth_level_limit() do
             level_up = state.level + 1
             new_state = %{state | level: level_up}
-            new_state = %{new_state | exp: total_exp - 355_000}
+            new_state = %{new_state | exp: total_exp - Engine.Constants.nineteenth_level_limit()}
             {:noreply, new_state, state}
           else
             new_state = %{state | exp: total_exp}

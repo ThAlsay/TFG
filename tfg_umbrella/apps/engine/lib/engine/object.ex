@@ -1,19 +1,48 @@
 defmodule Engine.Object do
   use GenServer
 
+  @moduledoc """
+  Definition of an engine object
+  """
+
   @enforce_keys [:level, :type]
   @derive Jason.Encoder
   defstruct level: 1, stat: nil, type: "", value: 0
 
-  def start_link(default) do
-    name = default["name"]
-    init_arg = default["state"]
+  def start_link(%Engine.GameEntity{name: name, state: state}) do
+    GenServer.start_link(__MODULE__, state,
+      name: {:global, Engine.Utilities.advanced_to_atom(name)}
+    )
+  end
 
-    if name === nil or init_arg === nil do
-      {:error, "Error creating object. Name or initial state missing"}
-    else
-      GenServer.start_link(__MODULE__, init_arg, name: String.to_atom(name))
-    end
+  def start_link(init_config) do
+    name =
+      cond do
+        is_map(init_config) and not is_struct(init_config) ->
+          Map.get(init_config, "name") || Map.get(init_config, :name)
+
+        match?(%__MODULE__{}, init_config) ->
+          init_config.name
+
+        true ->
+          nil
+      end
+
+    init_arg =
+      cond do
+        is_map(init_config) and not is_struct(init_config) ->
+          Map.get(init_config, "state") || Map.get(init_config, :state)
+
+        match?(%__MODULE__{}, init_config) ->
+          init_config.state
+
+        true ->
+          nil
+      end
+
+    GenServer.start_link(__MODULE__, init_arg,
+      name: {:global, Engine.Utilities.advanced_to_atom(name)}
+    )
   end
 
   def get_state(name) do
@@ -37,13 +66,12 @@ defmodule Engine.Object do
   end
 
   @impl true
-  def init(initial_state) when is_struct(initial_state) do
-    state = struct!(Engine.Object, initial_state)
-    {:ok, state}
+  def init(%Engine.Object{} = initial_state) do
+    {:ok, initial_state}
   end
 
   @impl true
-  def init(initial_state) when is_map(initial_state) do
+  def init(initial_state) when is_map(initial_state) and not is_struct(initial_state) do
     state = %Engine.Object{
       level: initial_state["level"],
       stat: initial_state["stat"],

@@ -1,8 +1,5 @@
 package stages;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,16 +7,33 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
 
-public class ChapterTwo {
-  public static void main(String[] args) throws IOException {
-    Gson jsonParser = new Gson();
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-    inspectLocation(jsonParser);
-    travel(jsonParser);
-    inspectLocation(jsonParser);
+public class Utilities {
+  public static void main(String[] args) throws IOException {
+    if (args.length != 1) {
+      System.out.println("Es necesario indicar el tipo de accion ('save' para guardar, 'start' para iniciar)");
+    } else {
+      Gson jsonParser = new Gson();
+
+      switch (args[0]) {
+        case "start":
+          startGame(jsonParser);
+          break;
+
+        case "save":
+          saveGame(jsonParser);
+          break;
+
+        default:
+          System.out.println("La accion seleccionada no es valida ('save' para guardar, 'start' para iniciar)");
+          break;
+      }
+    }
   }
 
-  private static void inspectLocation(Gson jsonParser) throws IOException {
+  private static void startGame(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -27,7 +41,7 @@ public class ChapterTwo {
 
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
-    mapa.put("method", "inspect_current_location");
+    mapa.put("method", "start");
     mapa.put("id", "1");
 
     out.println(jsonParser.toJson(mapa));
@@ -39,20 +53,16 @@ public class ChapterTwo {
     socket.close();
   }
 
-  private static void travel(Gson jsonParser) throws IOException {
+  private static void saveGame(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-    HashMap<String, String> params = new HashMap<String, String>();
-    params.put("connection", "entrada_cueva");
-
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
-    mapa.put("method", "cross_connection");
-    mapa.put("params", params);
-    mapa.put("id", "2");
+    mapa.put("method", "save");
+    mapa.put("id", "1");
 
     out.println(jsonParser.toJson(mapa));
 

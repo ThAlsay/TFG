@@ -1,4 +1,7 @@
 defmodule Engine.Db do
+  @moduledoc """
+  Functions for database reading and writing.
+  """
   def init() do
     Engine.Safe.changeset(%Engine.Safe{}, %{user_name: "initial", safe: %Engine.Game{}})
     |> Engine.Repo.insert()
@@ -29,22 +32,58 @@ defmodule Engine.Db do
     |> Engine.Repo.update()
 
     saved_user = Engine.User |> Engine.Repo.get(user)
-
     character_name = saved_user.character["name"]
-    new_character = String.to_atom(character_name) |> Engine.Character.get_state()
 
-    Engine.User.changeset(
-      saved_user,
-      Map.from_struct(%Engine.User{
-        username: saved_user.username,
-        password: saved_user.password,
-        character: %Engine.GameEntity{
-          name: character_name,
-          state: new_character
-        }
-      })
-    )
-    |> Engine.Repo.update()
+    case :global.whereis_name(Engine.Utilities.advanced_to_atom(character_name)) do
+      :undefined ->
+        {:error, :not_started}
+
+      pid ->
+        new_character = Engine.Character.get_state(pid)
+
+        Engine.User.changeset(
+          saved_user,
+          Map.from_struct(%Engine.User{
+            username: saved_user.username,
+            password: saved_user.password,
+            character: %Engine.GameEntity{
+              name: character_name,
+              state: new_character
+            }
+          })
+        )
+        |> Engine.Repo.update()
+    end
+  end
+
+  def get_character(name) do
+    saved_user = Engine.User |> Engine.Repo.get(name)
+    saved_user.character
+  end
+
+  def get_locations(name) do
+    saved_game = Engine.Safe |> Engine.Repo.get(name)
+    saved_game.safe["locations"]
+  end
+
+  def get_connections(name) do
+    saved_game = Engine.Safe |> Engine.Repo.get(name)
+    saved_game.safe["connections"]
+  end
+
+  def get_objects(name) do
+    saved_game = Engine.Safe |> Engine.Repo.get(name)
+    saved_game.safe["objects"]
+  end
+
+  def get_npcs(name) do
+    saved_game = Engine.Safe |> Engine.Repo.get(name)
+    saved_game.safe["npcs"]
+  end
+
+  def get_enemies(name) do
+    saved_game = Engine.Safe |> Engine.Repo.get(name)
+    saved_game.safe["enemies"]
   end
 
   def add_connection(conn) do
@@ -155,13 +194,20 @@ defmodule Engine.Db do
   defp get_connection_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = String.to_atom(h["name"]) |> Engine.Connection.get_state()
 
-      result = [
-        %Engine.GameEntity{name: h["name"], state: state} | result
-      ]
+      case :global.whereis_name(Engine.Utilities.advanced_to_atom(h["name"])) do
+        :undefined ->
+          {:error, :not_started}
 
-      get_connection_states(t, result)
+        pid ->
+          state = Engine.Connection.get_state(pid)
+
+          result = [
+            %Engine.GameEntity{name: h["name"], state: state} | result
+          ]
+
+          get_connection_states(t, result)
+      end
     else
       result
     end
@@ -170,13 +216,20 @@ defmodule Engine.Db do
   defp get_object_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = String.to_atom(h["name"]) |> Engine.Object.get_state()
 
-      result = [
-        %Engine.GameEntity{name: h["name"], state: state} | result
-      ]
+      case :global.whereis_name(Engine.Utilities.advanced_to_atom(h["name"])) do
+        :undefined ->
+          {:error, :not_started}
 
-      get_object_states(t, result)
+        pid ->
+          state = Engine.Object.get_state(pid)
+
+          result = [
+            %Engine.GameEntity{name: h["name"], state: state} | result
+          ]
+
+          get_object_states(t, result)
+      end
     else
       result
     end
@@ -185,13 +238,20 @@ defmodule Engine.Db do
   defp get_enemy_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = String.to_atom(h["name"]) |> Engine.Enemy.get_state()
 
-      result = [
-        %Engine.GameEntity{name: h["name"], state: state} | result
-      ]
+      case :global.whereis_name(Engine.Utilities.advanced_to_atom(h["name"])) do
+        :undefined ->
+          {:error, :not_started}
 
-      get_enemy_states(t, result)
+        pid ->
+          state = Engine.Enemy.get_state(pid)
+
+          result = [
+            %Engine.GameEntity{name: h["name"], state: state} | result
+          ]
+
+          get_enemy_states(t, result)
+      end
     else
       result
     end
@@ -200,13 +260,20 @@ defmodule Engine.Db do
   defp get_location_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = String.to_atom(h["name"]) |> Engine.Location.get_state()
 
-      result = [
-        %Engine.GameEntity{name: h["name"], state: state} | result
-      ]
+      case :global.whereis_name(Engine.Utilities.advanced_to_atom(h["name"])) do
+        :undefined ->
+          {:error, :not_started}
 
-      get_location_states(t, result)
+        pid ->
+          state = Engine.Location.get_state(pid)
+
+          result = [
+            %Engine.GameEntity{name: h["name"], state: state} | result
+          ]
+
+          get_location_states(t, result)
+      end
     else
       result
     end
@@ -215,13 +282,20 @@ defmodule Engine.Db do
   defp get_npc_states(array, result) do
     if length(array) > 0 do
       [h | t] = array
-      state = String.to_atom(h["name"]) |> Engine.Npc.get_state()
 
-      result = [
-        %Engine.GameEntity{name: h["name"], state: state} | result
-      ]
+      case :global.whereis_name(Engine.Utilities.advanced_to_atom(h["name"])) do
+        :undefined ->
+          {:error, :not_started}
 
-      get_npc_states(t, result)
+        pid ->
+          state = Engine.Npc.get_state(pid)
+
+          result = [
+            %Engine.GameEntity{name: h["name"], state: state} | result
+          ]
+
+          get_npc_states(t, result)
+      end
     else
       result
     end

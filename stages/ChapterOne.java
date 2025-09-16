@@ -14,31 +14,8 @@ public class ChapterOne {
   public static void main(String[] args) throws IOException {
     Gson jsonParser = new Gson();
 
-    startGame(jsonParser);
-
     getCurrentLocation(jsonParser);
-
     getCharacterStatus(jsonParser);
-  }
-
-  private static void startGame(Gson jsonParser) throws IOException {
-    Socket socket = new Socket("localhost", 3000);
-
-    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-    HashMap<String, Object> mapa = new HashMap<String, Object>();
-    mapa.put("jsonrpc", "2.0");
-    mapa.put("method", "start");
-    mapa.put("id", "1");
-
-    out.println(jsonParser.toJson(mapa));
-
-    HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {
-    }.getType());
-
-    printServerResult(respuesta);
-    socket.close();
   }
 
   private static void getCurrentLocation(Gson jsonParser) throws IOException {
@@ -50,7 +27,7 @@ public class ChapterOne {
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
     mapa.put("method", "inspect_current_location");
-    mapa.put("id", "2");
+    mapa.put("id", "1");
 
     out.println(jsonParser.toJson(mapa));
 
@@ -70,7 +47,7 @@ public class ChapterOne {
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
     mapa.put("method", "inspect_character");
-    mapa.put("id", "3");
+    mapa.put("id", "2");
 
     out.println(jsonParser.toJson(mapa));
 

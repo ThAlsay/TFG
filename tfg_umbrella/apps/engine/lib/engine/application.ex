@@ -4,7 +4,8 @@ defmodule Engine.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      Engine.Repo
+      Engine.Repo,
+      {Engine.Supervisor, []}
     ]
 
     opts = [strategy: :one_for_one, name: Engine]

@@ -1,4 +1,7 @@
 defmodule Engine.Authentication do
+  @moduledoc """
+  Authentication module for login users and creating new ones.
+  """
   def login(user, pass) do
     user = Engine.User |> Engine.Repo.get(user)
 
