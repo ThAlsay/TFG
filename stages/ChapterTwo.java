@@ -10,6 +10,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
 
+/*
+ * Escenario de muestra para demostrar como se interactua con el juego mediante peticiones con parametros.
+ */
 public class ChapterTwo {
   public static void main(String[] args) throws IOException {
     Gson jsonParser = new Gson();
@@ -19,6 +22,10 @@ public class ChapterTwo {
     inspectLocation(jsonParser);
   }
 
+  /*
+   * Misma funcion que en el capitulo 1. Muestra el estado de la instancia en la
+   * que se encuentra el personaje.
+   */
   private static void inspectLocation(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -39,6 +46,13 @@ public class ChapterTwo {
     socket.close();
   }
 
+  /*
+   * Funcion que demuestra la construccion de una peticion al servidor incluyendo
+   * parametros.
+   * 
+   * La peticion al servidor permite al personaje moverse de estancia por una
+   * conexion que se pasa como parametro.
+   */
   private static void travel(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -63,6 +77,9 @@ public class ChapterTwo {
     socket.close();
   }
 
+  /*
+   * Funcion auxiliar para imprimir el resultado del servidor
+   */
   private static void printServerResult(HashMap<String, Object> mapa) {
     Object resultado = mapa.get("result");
     Object error = mapa.get("error");

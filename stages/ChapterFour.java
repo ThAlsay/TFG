@@ -17,6 +17,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/*
+ * Capitulo dedicado al aprendizaje sobre los actores en un sistema distribuido y 
+ * a las colas de mensajes dentro de estos.
+ */
 public class ChapterFour {
   public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
     Gson jsonParser = new Gson();
@@ -29,6 +33,13 @@ public class ChapterFour {
     getCharacterStatus(jsonParser);
   }
 
+  /*
+   * Funcion pensada para mostrar las colas de mensajes mandando x peticiones a la
+   * vez al mismo enpoint del servidor. Este endpoint transmite todos los mensajes
+   * al mismo actor que los procesa de a uno y devuelve el resultado.
+   * 
+   * Se emplea los futuros de Java para las peticiones asincronas.
+   */
   private static void interactWithNpc(Gson jsonParser) throws IOException, InterruptedException, ExecutionException {
     HashMap<String, String> params = new HashMap<String, String>();
     params.put("npc", "sabio");
@@ -69,6 +80,9 @@ public class ChapterFour {
     executor.shutdown();
   }
 
+  /*
+   * Misma funcion del capitulo 1. Muestar el estado del personaje.
+   */
   private static void getCharacterStatus(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -89,6 +103,10 @@ public class ChapterFour {
     socket.close();
   }
 
+  /*
+   * Misma funcion que en el capitulo 1. Muestra el estado de la instancia en la
+   * que se encuentra el personaje.
+   */
   private static void inspectLocation(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -109,6 +127,9 @@ public class ChapterFour {
     socket.close();
   }
 
+  /*
+   * Misma funcion que en el capitulo 2. Cambia al personaje de instancia.
+   */
   private static void travel(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -133,6 +154,9 @@ public class ChapterFour {
     socket.close();
   }
 
+  /*
+   * Funcion auxiliar para imprimir el resultado del servidor
+   */
   private static void printServerResult(HashMap<String, Object> mapa) {
     Object resultado = mapa.get("result");
     Object error = mapa.get("error");

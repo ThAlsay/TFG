@@ -10,6 +10,9 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+/*
+ * Capitulo pensado para demostrar el broadcasting en un sistema distribuido.
+ */
 public class ChapterFive {
   public static void main(String[] args) throws IOException {
     Gson jsonParser = new Gson();
@@ -20,6 +23,10 @@ public class ChapterFive {
     getCharacterStatus(jsonParser);
   }
 
+  /*
+   * Funcion que realiza una peticion al servidor de manera que este manda la
+   * misma accion a dos actores de manera simultanea.
+   */
   private static void attack_all_enemies(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -40,6 +47,9 @@ public class ChapterFive {
     socket.close();
   }
 
+  /*
+   * Misma funcion del capitulo 1. Muestar el estado del personaje.
+   */
   private static void getCharacterStatus(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -60,6 +70,10 @@ public class ChapterFive {
     socket.close();
   }
 
+  /*
+   * Misma funcion que en el capitulo 1. Muestra el estado de la instancia en la
+   * que se encuentra el personaje.
+   */
   private static void inspectLocation(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -80,6 +94,9 @@ public class ChapterFive {
     socket.close();
   }
 
+  /*
+   * Misma funcion que en el capitulo 2. Cambia al personaje de instancia.
+   */
   private static void travel(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -104,6 +121,9 @@ public class ChapterFive {
     socket.close();
   }
 
+  /*
+   * Funcion auxiliar para imprimir el resultado del servidor
+   */
   private static void printServerResult(HashMap<String, Object> mapa) {
     Object resultado = mapa.get("result");
     Object error = mapa.get("error");

@@ -10,6 +10,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
 
+/*
+ * Escenario en el que se hace uso de lo que se muestra en el capitulo 2 para que el alumno practique las 
+ * peticiones al servidor con parametros.
+ * 
+ * Teniendo los ejemplos anteriores y dando los endpoints a los que se tiene que apuntar el alumno tiene 
+ * que ser capaz de completar las funciones pickObject y equipObject.
+ */
 public class ChapterThree {
   public static void main(String[] args) throws IOException {
     Gson jsonParser = new Gson();
@@ -22,6 +29,10 @@ public class ChapterThree {
     getCharacterStatus(jsonParser);
   }
 
+  /*
+   * Misma funcion que en el capitulo 1. Muestra el estado de la instancia en la
+   * que se encuentra el personaje.
+   */
   private static void inspectLocation(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -42,6 +53,10 @@ public class ChapterThree {
     socket.close();
   }
 
+  /*
+   * Funcion en la que se le indica al servidor que el personaje quiere recoger el
+   * objeto pasado por parametro
+   */
   private static void pickObject(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -66,6 +81,10 @@ public class ChapterThree {
     socket.close();
   }
 
+  /*
+   * Funcion en la que se indica al servidor que el personaje se quiere equipar un
+   * objeto de su inventario.
+   */
   private static void equipObject(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -90,6 +109,9 @@ public class ChapterThree {
     socket.close();
   }
 
+  /*
+   * Misma funcion del capitulo 1. Muestar el estado del personaje.
+   */
   private static void getCharacterStatus(Gson jsonParser) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
@@ -110,6 +132,9 @@ public class ChapterThree {
     socket.close();
   }
 
+  /*
+   * Funcion auxiliar para imprimir el resultado del servidor
+   */
   private static void printServerResult(HashMap<String, Object> mapa) {
     Object resultado = mapa.get("result");
     Object error = mapa.get("error");
