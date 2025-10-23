@@ -2,6 +2,12 @@ defmodule Engine.Dice do
   @moduledoc """
   Functions for deciding turn order between two entities.
   """
+
+  @doc """
+  Dice for turn selection based on level diference, benefiting the one with more level.
+
+  Each level diference level adds 5% probability on the dice launch until a maximum of 95% probability is reached.
+  """
   def check_combat_turn(character_level, enemy_level) do
     ch_prob = 50 + (character_level - enemy_level) * 5
 

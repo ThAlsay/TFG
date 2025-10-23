@@ -102,6 +102,10 @@ defmodule Engine.Character do
     GenServer.call(name, :get_inventory)
   end
 
+  def hit(name, hit_points) do
+    GenServer.call(name, {:hit, hit_points})
+  end
+
   def add_exp(name, exp) do
     GenServer.cast(name, {:add_exp, exp})
   end
@@ -120,10 +124,6 @@ defmodule Engine.Character do
 
   def change_combat_status(name, status) do
     GenServer.cast(name, {:change_combat_status, status})
-  end
-
-  def hit(name, hit_points) do
-    GenServer.cast(name, {:hit, hit_points})
   end
 
   @impl true
@@ -223,6 +223,15 @@ defmodule Engine.Character do
   @impl true
   def handle_call(:get_inventory, _from, state) do
     {:reply, state.inventory, state}
+  end
+
+  @impl true
+  def handle_call({:hit, health_points}, _from, state) do
+    new_health = state.health - health_points
+
+    new_state = %{state | health: new_health}
+
+    {:reply, new_health, new_state}
   end
 
   @impl true
@@ -487,8 +496,12 @@ defmodule Engine.Character do
 
   @impl true
   def handle_cast({:add_to_inventory, object}, state) do
-    new_state = %{state | inventory: [object | state.inventory]}
-    {:noreply, new_state}
+    if !Enum.member?(state.inventory, object) do
+      new_state = %{state | inventory: [object | state.inventory]}
+      {:noreply, new_state}
+    else
+      {:noreply, state}
+    end
   end
 
   @impl true
@@ -593,15 +606,6 @@ defmodule Engine.Character do
   @impl true
   def handle_cast({:change_combat_status, status}, state) do
     new_state = %{state | in_combat: status}
-    {:noreply, new_state}
-  end
-
-  @impl true
-  def handle_cast({:hit, health_points}, state) do
-    new_health = state.health - health_points
-
-    new_state = %{state | health: new_health}
-
     {:noreply, new_state}
   end
 end

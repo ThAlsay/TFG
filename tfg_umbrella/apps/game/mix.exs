@@ -27,7 +27,9 @@ defmodule Game.MixProject do
   defp deps do
     [
       {:engine, in_umbrella: true},
-      {:jason, "~> 1.0"}
+      {:joken, "~> 2.6"},
+      {:jason, "~> 1.0"},
+      {:thousand_island, "~> 1.0"}
     ]
   end
 end

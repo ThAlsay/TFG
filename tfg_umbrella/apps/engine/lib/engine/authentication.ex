@@ -8,9 +8,9 @@ defmodule Engine.Authentication do
     hashed_password = :crypto.hash(:sha256, pass) |> Base.encode16()
 
     if user.password !== hashed_password do
-      {:error, "wrong_password"}
+      :error
     else
-      {:ok, user.character}
+      :ok
     end
   end
 
@@ -21,14 +21,6 @@ defmodule Engine.Authentication do
       username: user,
       password: hashed_password,
       character: Map.from_struct(character)
-    })
-    |> Engine.Repo.insert()
-
-    initial_game = Engine.Safe |> Engine.Repo.get("initial")
-
-    Engine.Safe.changeset(%Engine.Safe{}, %{
-      user_name: user,
-      safe: initial_game.safe
     })
     |> Engine.Repo.insert()
   end

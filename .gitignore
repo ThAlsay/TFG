@@ -23,3 +23,6 @@ tfg_umbrella/tmp/
 
 # Drawio backup files
 /document/**/*.bkp
+
+# Environment variables file
+.env

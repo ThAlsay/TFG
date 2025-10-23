@@ -91,7 +91,7 @@ defmodule Engine.Enemy do
   end
 
   def hit(name, hit_points) do
-    GenServer.cast(name, {:hit, hit_points})
+    GenServer.call(name, {:hit, hit_points})
   end
 
   @impl true
@@ -199,11 +199,11 @@ defmodule Engine.Enemy do
   end
 
   @impl true
-  def handle_cast({:hit, health_points}, state) do
+  def handle_call({:hit, health_points}, _from, state) do
     new_health = state.health - health_points
 
     new_state = %{state | health: new_health}
 
-    {:noreply, new_state}
+    {:reply, new_health, new_state}
   end
 end

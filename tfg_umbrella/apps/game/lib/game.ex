@@ -2,16 +2,7 @@ defmodule Game do
   require Logger
 
   def start() do
-    character = Engine.Db.get_character("prueba")
-    saved_game = Engine.Safe |> Engine.Repo.get("prueba")
-
-    res =
-      Game.RemoteCharacterManager.start_remote_character(
-        character,
-        Engine.Router.get_routed_name(routes(), "prueba")
-      )
-
-    Logger.info("Remote result: #{inspect(res)}")
+    saved_game = Engine.Safe |> Engine.Repo.get("current")
 
     init_connections(saved_game.safe["connections"], :main_supervisor)
     init_locations(saved_game.safe["locations"], :main_supervisor)
@@ -25,9 +16,8 @@ defmodule Game do
   def routes() do
     [
       {"goblin", :node1@enemies_node},
-      {"mago_goblin", :node1@enemies_node},
-      {"prueba", :node2@character_node},
-      {"sabio", :node3@game_node}
+      {"tim", :node2@character_node},
+      {"tom", :node2@character_node}
     ]
   end
 

@@ -1,7 +1,7 @@
 defmodule Engine.Safe do
   use Ecto.Schema
 
-  @primary_key {:user_name, :string, autogenerate: false}
+  @primary_key {:id, :string, autogenerate: false}
   schema "saves" do
     field(:safe, :map)
 
@@ -10,8 +10,8 @@ defmodule Engine.Safe do
 
   def changeset(safe, params) do
     safe
-    |> Ecto.Changeset.cast(params, [:user_name, :safe])
-    |> Ecto.Changeset.validate_required([:user_name, :safe])
+    |> Ecto.Changeset.cast(params, [:id, :safe])
+    |> Ecto.Changeset.validate_required([:id, :safe])
   end
 end
 

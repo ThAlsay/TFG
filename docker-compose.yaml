@@ -37,13 +37,14 @@ services:
       - RELEASE_DISTRIBUTION=sname
       - RELEASE_NODE=node3@game_node
       - RELEASE_COOKIE=cookienotansecreta
+      - JWT_SECRET=${JWT_SECRET}
     ports:
       - 3000:3000
     networks:
       - elixir_net
 
   db:
-    image: postgres:latest
+    image: postgres:17
     container_name: database
     restart: always
     environment:

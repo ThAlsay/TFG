@@ -7,8 +7,8 @@ defmodule Engine.Db do
     |> Engine.Repo.insert()
   end
 
-  def safe_game(user) do
-    saved_game = Engine.Safe |> Engine.Repo.get(user)
+  def safe_game(safe_id, username) do
+    saved_game = Engine.Safe |> Engine.Repo.get(safe_id)
 
     new_conns = get_connection_states(saved_game.safe["connections"], [])
     new_enemies = get_enemy_states(saved_game.safe["enemies"], [])
@@ -19,7 +19,7 @@ defmodule Engine.Db do
     Engine.Safe.changeset(
       saved_game,
       Map.from_struct(%Engine.Safe{
-        user_name: user,
+        id: safe_id,
         safe: %Engine.Game{
           connections: new_conns,
           enemies: new_enemies,
@@ -31,7 +31,7 @@ defmodule Engine.Db do
     )
     |> Engine.Repo.update()
 
-    saved_user = Engine.User |> Engine.Repo.get(user)
+    saved_user = Engine.User |> Engine.Repo.get(username)
     character_name = saved_user.character["name"]
 
     case :global.whereis_name(Engine.Utilities.advanced_to_atom(character_name)) do
@@ -84,111 +84,6 @@ defmodule Engine.Db do
   def get_enemies(name) do
     saved_game = Engine.Safe |> Engine.Repo.get(name)
     saved_game.safe["enemies"]
-  end
-
-  def add_connection(conn) do
-    new_conn = struct!(Engine.GameEntity, conn)
-
-    save = Engine.Safe |> Engine.Repo.get("initial")
-
-    Engine.Safe.changeset(
-      save,
-      Map.from_struct(%Engine.Safe{
-        user_name: "initial",
-        safe: %Engine.Game{
-          connections: [new_conn | save.safe["connections"]],
-          enemies: save.safe["enemies"],
-          objects: save.safe["objects"],
-          locations: save.safe["locations"],
-          npcs: save.safe["npcs"]
-        }
-      })
-    )
-    |> Engine.Repo.update()
-  end
-
-  def add_enemy(enemy) do
-    new_enemy = struct!(Engine.GameEntity, enemy)
-
-    save = Engine.Safe |> Engine.Repo.get("initial")
-
-    Engine.Safe.changeset(
-      save,
-      Map.from_struct(%Engine.Safe{
-        user_name: "initial",
-        safe: %Engine.Game{
-          connections: save.safe["connections"],
-          enemies: [new_enemy | save.safe["enemies"]],
-          objects: save.safe["objects"],
-          locations: save.safe["locations"],
-          npcs: save.safe["npcs"]
-        }
-      })
-    )
-    |> Engine.Repo.update()
-  end
-
-  def add_object(obj) do
-    new_obj = struct!(Engine.GameEntity, obj)
-
-    save = Engine.Safe |> Engine.Repo.get("initial")
-
-    Engine.Safe.changeset(
-      save,
-      Map.from_struct(%Engine.Safe{
-        user_name: "initial",
-        safe: %Engine.Game{
-          connections: save.safe["connections"],
-          enemies: save.safe["enemies"],
-          objects: [new_obj | save.safe["objects"]],
-          locations: save.safe["locations"],
-          npcs: save.safe["npcs"]
-        }
-      })
-    )
-    |> Engine.Repo.update()
-  end
-
-  def add_location(location) do
-    new_location = struct!(Engine.GameEntity, location)
-
-    save = Engine.Safe |> Engine.Repo.get("initial")
-
-    Engine.Safe.changeset(
-      save,
-      Map.from_struct(%Engine.Safe{
-        user_name: "initial",
-        safe: %Engine.Game{
-          connections: save.safe["connections"],
-          enemies: save.safe["enemies"],
-          objects: save.safe["objects"],
-          locations: [new_location | save.safe["locations"]],
-          npcs: save.safe["npcs"]
-        }
-      })
-    )
-    |> Engine.Repo.update()
-  end
-
-  def add_npc(npc) do
-    new_npc = struct!(Engine.GameEntity, npc)
-
-    save = Engine.Safe |> Engine.Repo.get("initial")
-
-    Engine.Safe.changeset(
-      save,
-      Map.from_struct(%Engine.Safe{
-        user_name: "initial",
-        safe: %Engine.Game{
-          connections: save.safe["connections"],
-          enemies: save.safe["enemies"],
-          objects: save.safe["objects"],
-          locations: save.safe["locations"],
-          npcs: [new_npc | save.safe["npcs"]]
-        }
-      })
-    )
-    |> Engine.Repo.update()
   end
 
   defp get_connection_states(array, result) do

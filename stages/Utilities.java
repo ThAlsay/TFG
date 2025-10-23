@@ -12,36 +12,56 @@ import com.google.gson.reflect.TypeToken;
 
 public class Utilities {
   public static void main(String[] args) throws IOException {
-    if (args.length != 1) {
-      System.out.println("Es necesario indicar el tipo de accion ('save' para guardar, 'start' para iniciar)");
+    if (args.length != 2) {
+      System.out
+          .println("Es necesario indicar el tipo de accion ('save' para guardar, 'login' para iniciar el personaje)");
     } else {
       Gson jsonParser = new Gson();
 
       switch (args[0]) {
-        case "start":
-          startGame(jsonParser);
+        case "login":
+          if (args[1].equals("tim")) {
+            login(jsonParser, "distribuidos1");
+          } else if (args[1].equals("tom")) {
+            login(jsonParser, "distribuidos2");
+          } else {
+            System.out.println("El personaje seleccionado no existe");
+          }
           break;
 
         case "save":
-          saveGame(jsonParser);
+          if (args[1].equals("tim")) {
+            saveGame(jsonParser, "distribuidos1");
+          } else if (args[1].equals("tom")) {
+            saveGame(jsonParser, "distribuidos2");
+          } else {
+            System.out.println("El personaje seleccionado no existe");
+          }
           break;
 
         default:
-          System.out.println("La accion seleccionada no es valida ('save' para guardar, 'start' para iniciar)");
+          System.out
+              .println("La accion seleccionada no es valida ('save' para guardar, 'login' para iniciar el personaje)");
           break;
       }
     }
   }
 
-  private static void startGame(Gson jsonParser) throws IOException {
+  private static void login(Gson jsonParser, String username) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+    HashMap<String, String> credentials = new HashMap<String, String>();
+
+    credentials.put("username", username);
+    credentials.put("password", "1234");
+
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
-    mapa.put("method", "start");
+    mapa.put("method", "login");
+    mapa.put("params", credentials);
     mapa.put("id", "1");
 
     out.println(jsonParser.toJson(mapa));
@@ -53,15 +73,19 @@ public class Utilities {
     socket.close();
   }
 
-  private static void saveGame(Gson jsonParser) throws IOException {
+  private static void saveGame(Gson jsonParser, String username) throws IOException {
     Socket socket = new Socket("localhost", 3000);
 
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+    HashMap<String, String> params = new HashMap<String, String>();
+    params.put("username", username);
+
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
     mapa.put("method", "save");
+    mapa.put("params", params);
     mapa.put("id", "1");
 
     out.println(jsonParser.toJson(mapa));

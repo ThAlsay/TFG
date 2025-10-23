@@ -25,7 +25,7 @@ Contains the database initialization SQL script. This script initializes and dum
 
 ### Stages folder
 
-All the Java code for teaching students about distributed systems is located in this folder
+All the Java code for teaching students about distributed systems is located in this folder.
 
 ### Manuals folder
 
@@ -37,7 +37,7 @@ Two docker compose files meant to start all the images necesary. The file with t
 
 ## Install
 
-All actions start from the root directory of the project
+All actions start from the root directory of the project.
 
 ### Docker image build
 
@@ -63,14 +63,14 @@ There are multiple tools for initializing a database, such us pgAdmin or the cli
 
 All this command must be executed inside the "stages" folder
 
-#### Initialize game
+#### Start character and save game
 
 ```bash
-java -cp ./gson/gson-2.12.1.jar ./Utilities.java {start/save}
+java -cp ./gson/gson-2.12.1.jar ./Utilities.java {login/save} {tim/tom}
 ```
 
-#### Run java chapters
+#### Run java examples and solutions
 
 ```bash
-java -cp ./gson/gson-2.12.1.jar ./Chapter{One/Two/Three/Four/Five}.java
+java -cp ./gson/gson-2.12.1.jar ./{java filename}.java
 ```
