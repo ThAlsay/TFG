@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.5 (Debian 17.5-1.pgdg120+1)
+-- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
 -- Dumped by pg_dump version 17.1
 
--- Started on 2025-09-08 13:01:38
+-- Started on 2025-10-24 23:35:52
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -45,7 +45,7 @@ ALTER TABLE public.players OWNER TO admin;
 --
 
 CREATE TABLE public.saves (
-    user_name character varying(255) NOT NULL,
+    id character varying(255) NOT NULL,
     safe jsonb NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL
@@ -60,7 +60,8 @@ ALTER TABLE public.saves OWNER TO admin;
 -- Data for Name: players; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-INSERT INTO public.players (username, password, "character", inserted_at, updated_at) VALUES ('prueba', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4', '{"name": "prueba", "state": {"exp": 0, "arms": null, "body": null, "feet": null, "head": null, "legs": null, "level": 1, "health": 100, "weapon": null, "wisdom": 1, "charisma": 1, "missions": [], "strength": 1, "dexterity": 1, "in_combat": false, "inventory": [], "constitution": 1, "intelligence": 1, "current_location": "bosque"}}', '2025-05-15 13:38:25', '2025-07-02 16:08:11');
+INSERT INTO public.players VALUES ('distribuidos1', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4', '{"name": "tim", "state": {"exp": 0, "arms": null, "body": null, "feet": null, "head": null, "legs": null, "level": 1, "health": 100, "weapon": null, "wisdom": 1, "charisma": 1, "missions": [], "strength": 1, "dexterity": 1, "in_combat": false, "inventory": [], "constitution": 1, "intelligence": 1, "current_location": "bosque"}}', '2025-05-15 13:38:25', '2025-10-22 22:06:14') ON CONFLICT DO NOTHING;
+INSERT INTO public.players VALUES ('distribuidos2', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4', '{"name": "tom", "state": {"exp": 0, "arms": null, "body": null, "feet": null, "head": null, "legs": null, "level": 1, "health": 100, "weapon": null, "wisdom": 1, "charisma": 1, "missions": [], "strength": 1, "dexterity": 1, "in_combat": false, "inventory": [], "constitution": 1, "intelligence": 1, "current_location": "bosque"}}', '2025-05-15 13:38:25', '2025-10-22 22:06:14') ON CONFLICT DO NOTHING;
 
 
 --
@@ -69,8 +70,8 @@ INSERT INTO public.players (username, password, "character", inserted_at, update
 -- Data for Name: saves; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-INSERT INTO public.saves (user_name, safe, inserted_at, updated_at) VALUES ('initial', '{"npcs": [{"name": "sabio", "state": {"level": 1, "wisdom": 17, "charisma": 5, "strength": 1, "dexterity": 1, "interaction": "key", "constitution": 1, "intelligence": 20, "interaction_limit": 10}}], "enemies": [{"name": "goblin", "state": {"level": 1, "health": 4, "reward": 200, "wisdom": 0, "charisma": 4, "strength": 10, "dexterity": 100, "attack_type": "dexterity", "constitution": 2, "intelligence": 0}}, {"name": "mago_goblin", "state": {"level": 1, "health": 2, "reward": 300, "wisdom": 100, "charisma": 4, "strength": 2, "dexterity": 0, "attack_type": "wisdom", "constitution": 1, "intelligence": 4}}], "objects": [{"name": "espada", "state": {"stat": "strength", "type": "weapon", "level": 1, "value": 4}}, {"name": "key", "state": {"stat": null, "type": "connection_object", "level": 1, "value": 0}}], "locations": [{"name": "bosque", "state": {"npc": null, "enemy": [], "objects": [], "connections": ["entrada_cueva"]}}, {"name": "habitacion_cueva_1", "state": {"npc": null, "enemy": [], "objects": ["espada"], "connections": ["entrada_cueva", "corredor_cueva_1", "corredor_cueva_2"]}}, {"name": "habitacion_cueva_2", "state": {"npc": null, "enemy": ["goblin", "mago_goblin"], "objects": [], "connections": ["corredor_cueva_1"]}}, {"name": "habitacion_cueva_3", "state": {"npc": "sabio", "enemy": [], "objects": [], "connections": ["corredor_cueva_2"]}}], "connections": [{"name": "entrada_cueva", "state": {"level": 1, "object": null, "location_1": "bosque", "location_2": "habitacion_cueva_1"}}, {"name": "corredor_cueva_1", "state": {"level": 1, "object": "key", "location_1": "habitacion_cueva_1", "location_2": "habitacion_cueva_2"}}, {"name": "corredor_cueva_2", "state": {"level": 1, "object": null, "location_1": "habitacion_cueva_1", "location_2": "habitacion_cueva_3"}}]}', '2025-05-13 22:15:37', '2025-05-15 13:25:19');
-INSERT INTO public.saves (user_name, safe, inserted_at, updated_at) VALUES ('prueba', '{"npcs": [{"name": "sabio", "state": {"level": 1, "wisdom": 17, "charisma": 5, "strength": 1, "dexterity": 1, "interaction": "key", "constitution": 1, "intelligence": 20, "interaction_limit": 10}}], "enemies": [{"name": "goblin", "state": {"level": 1, "health": 4, "reward": 200, "wisdom": 0, "charisma": 4, "strength": 10, "dexterity": 100, "attack_type": "dexterity", "constitution": 2, "intelligence": 0}}, {"name": "mago_goblin", "state": {"level": 1, "health": 2, "reward": 300, "wisdom": 100, "charisma": 4, "strength": 2, "dexterity": 0, "attack_type": "wisdom", "constitution": 1, "intelligence": 4}}], "objects": [{"name": "espada", "state": {"stat": "strength", "type": "weapon", "level": 1, "value": 4}}, {"name": "key", "state": {"stat": null, "type": "connection_object", "level": 1, "value": 0}}], "locations": [{"name": "bosque", "state": {"npc": null, "enemy": [], "objects": [], "connections": ["entrada_cueva"]}}, {"name": "habitacion_cueva_1", "state": {"npc": null, "enemy": [], "objects": ["espada"], "connections": ["entrada_cueva", "corredor_cueva_1", "corredor_cueva_2"]}}, {"name": "habitacion_cueva_2", "state": {"npc": null, "enemy": ["goblin", "mago_goblin"], "objects": [], "connections": ["corredor_cueva_1"]}}, {"name": "habitacion_cueva_3", "state": {"npc": "sabio", "enemy": [], "objects": [], "connections": ["corredor_cueva_2"]}}], "connections": [{"name": "entrada_cueva", "state": {"level": 1, "object": null, "location_1": "bosque", "location_2": "habitacion_cueva_1"}}, {"name": "corredor_cueva_1", "state": {"level": 1, "object": "key", "location_1": "habitacion_cueva_1", "location_2": "habitacion_cueva_2"}}, {"name": "corredor_cueva_2", "state": {"level": 1, "object": null, "location_1": "habitacion_cueva_1", "location_2": "habitacion_cueva_3"}}]}', '2025-05-15 13:38:25', '2025-07-02 16:08:11');
+INSERT INTO public.saves VALUES ('initial', '{"npcs": [{"name": "sabio", "state": {"level": 1, "wisdom": 17, "charisma": 5, "strength": 1, "dexterity": 1, "interaction": "key", "constitution": 1, "intelligence": 20, "interaction_limit": 5}}], "enemies": [{"name": "goblin", "state": {"level": 1, "health": 4, "reward": 200, "wisdom": 0, "charisma": 4, "strength": 10, "dexterity": 50, "attack_type": "dexterity", "constitution": 2, "intelligence": 0}}], "objects": [{"name": "espada", "state": {"stat": "strength", "type": "weapon", "level": 1, "value": 4}}, {"name": "key", "state": {"stat": null, "type": "connection_object", "level": 1, "value": 0}}], "locations": [{"name": "bosque", "state": {"npc": null, "enemy": [], "objects": [], "connections": ["entrada_cueva"]}}, {"name": "habitacion_cueva_1", "state": {"npc": null, "enemy": [], "objects": ["espada"], "connections": ["entrada_cueva", "corredor_cueva_1", "corredor_cueva_2"]}}, {"name": "habitacion_cueva_2", "state": {"npc": null, "enemy": ["goblin"], "objects": [], "connections": ["corredor_cueva_1"]}}, {"name": "habitacion_cueva_3", "state": {"npc": "sabio", "enemy": [], "objects": [], "connections": ["corredor_cueva_2"]}}], "connections": [{"name": "entrada_cueva", "state": {"level": 1, "object": null, "location_1": "bosque", "location_2": "habitacion_cueva_1"}}, {"name": "corredor_cueva_1", "state": {"level": 1, "object": "key", "location_1": "habitacion_cueva_1", "location_2": "habitacion_cueva_2"}}, {"name": "corredor_cueva_2", "state": {"level": 1, "object": null, "location_1": "habitacion_cueva_1", "location_2": "habitacion_cueva_3"}}]}', '2025-05-13 22:15:37', '2025-05-15 13:25:19') ON CONFLICT DO NOTHING;
+INSERT INTO public.saves VALUES ('current', '{"npcs": [{"name": "sabio", "state": {"level": 1, "wisdom": 17, "charisma": 5, "strength": 1, "dexterity": 1, "interaction": "key", "constitution": 1, "intelligence": 20, "interaction_limit": 5}}], "enemies": [{"name": "goblin", "state": {"level": 1, "health": 4, "reward": 200, "wisdom": 0, "charisma": 4, "strength": 10, "dexterity": 50, "attack_type": "dexterity", "constitution": 2, "intelligence": 0}}], "objects": [{"name": "key", "state": {"stat": null, "type": "connection_object", "level": 1, "value": 0}}, {"name": "espada", "state": {"stat": "strength", "type": "weapon", "level": 1, "value": 4}}], "locations": [{"name": "habitacion_cueva_3", "state": {"npc": "sabio", "enemy": [], "objects": [], "connections": ["corredor_cueva_2"]}}, {"name": "habitacion_cueva_2", "state": {"npc": null, "enemy": ["goblin"], "objects": [], "connections": ["corredor_cueva_1"]}}, {"name": "habitacion_cueva_1", "state": {"npc": null, "enemy": [], "objects": ["espada"], "connections": ["entrada_cueva", "corredor_cueva_1", "corredor_cueva_2"]}}, {"name": "bosque", "state": {"npc": null, "enemy": [], "objects": [], "connections": ["entrada_cueva"]}}], "connections": [{"name": "corredor_cueva_2", "state": {"level": 1, "object": null, "location_1": "habitacion_cueva_1", "location_2": "habitacion_cueva_3"}}, {"name": "corredor_cueva_1", "state": {"level": 1, "object": "key", "location_1": "habitacion_cueva_1", "location_2": "habitacion_cueva_2"}}, {"name": "entrada_cueva", "state": {"level": 1, "object": null, "location_1": "bosque", "location_2": "habitacion_cueva_1"}}]}', '2025-05-15 13:38:25', '2025-10-22 22:06:14') ON CONFLICT DO NOTHING;
 
 
 --
@@ -88,10 +89,10 @@ ALTER TABLE ONLY public.players
 --
 
 ALTER TABLE ONLY public.saves
-    ADD CONSTRAINT saves_pkey PRIMARY KEY (user_name);
+    ADD CONSTRAINT saves_pkey PRIMARY KEY (id);
 
 
--- Completed on 2025-09-08 13:01:38
+-- Completed on 2025-10-24 23:35:52
 
 --
 -- PostgreSQL database dump complete

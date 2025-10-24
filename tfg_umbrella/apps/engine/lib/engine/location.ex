@@ -126,6 +126,16 @@ defmodule Engine.Location do
     {:reply, state.npc, state}
   end
 
+  # @impl true
+  # def handle_call(:get_enemy, _from, state) do
+  #   response =
+  #     Enum.filter(state.enemy, fn ene ->
+  #       Engine.Enemy.is_alive?({:global, Engine.Utilities.advanced_to_atom(ene)})
+  #     end)
+
+  #   {:reply, response, state}
+  # end
+
   @impl true
   def handle_call(:get_enemy, _from, state) do
     response =
@@ -133,7 +143,29 @@ defmodule Engine.Location do
         Engine.Enemy.is_alive?({:global, Engine.Utilities.advanced_to_atom(ene)})
       end)
 
-    {:reply, response, state}
+    if length(state.enemy) > 0 do
+      if length(response) === 0 do
+        DynamicSupervisor.start_child(
+          Engine.Supervisor,
+          {Engine.Object,
+           %Engine.GameEntity{
+             name: "trofeo",
+             state: %Engine.Object{
+               level: 1,
+               stat: nil,
+               type: "inventory_item",
+               value: nil
+             }
+           }}
+        )
+
+        {:reply, response, %{state | objects: ["trofeo"]}}
+      else
+        {:reply, response, state}
+      end
+    else
+      {:reply, response, state}
+    end
   end
 
   @impl true

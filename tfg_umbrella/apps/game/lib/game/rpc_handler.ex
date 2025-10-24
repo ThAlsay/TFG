@@ -2,6 +2,20 @@ defmodule Game.RpcHandler do
   use ThousandIsland.Handler
   require Logger
 
+  @method_definition """
+  Information is described as: method -> description (params)
+  save -> saves the game for username (username: string)
+  login -> logs in and starts users's character if login is correct (username: string, password: string)
+  inspect_character -> returns character's status (character_name: string)
+  inspect_current_location -> returns charcter's location information (character_name: string)
+  equip_object -> equips the selected object from the character's inventory (character_name: string, object: string)
+  inspect_connection -> returns next location if selected connection is used based on character's position in the game (character_name: string, connection: string)
+  take_object -> selected character picks an object from the location it is in (character_name: string, object: string)
+  cross_connection -> character travels to the next location via the connection (character_name: string, connection: string)
+  attack -> character attacks and enemy in its current location (character_name: string, enemay: string)
+  interact -> character interacts with an NPC in its current location (character_name: string, npc: string)
+  """
+
   @impl ThousandIsland.Handler
   def handle_data(
         data,
@@ -10,6 +24,15 @@ defmodule Game.RpcHandler do
       )
       when is_binary(data) do
     case Jason.decode(data) do
+      {:ok,
+       %{
+         "jsonrpc" => "2.0",
+         "method" => "info",
+         "id" => id
+       }} ->
+        response_wrapper(socket, @method_definition, id)
+        {:continue, state}
+
       {:ok,
        %{
          "jsonrpc" => "2.0",

@@ -31,6 +31,8 @@ public class SolucionPractica3 {
     travel(jsonParser, out, in, "corredor_cueva_1", "1");
     attack(jsonParser, out, in, "2");
     getCharacterStatus(jsonParser, out, in, "3");
+    inspectLocation(jsonParser, out, in, "4");
+    pickObject(jsonParser, out, in, "5");
 
     socket.close();
   }
@@ -82,6 +84,44 @@ public class SolucionPractica3 {
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
     mapa.put("method", "inspect_character");
+    mapa.put("params", params);
+    mapa.put("id", id);
+
+    out.println(jsonParser.toJson(mapa));
+
+    HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {
+    }.getType());
+
+    printServerResult(respuesta);
+  }
+
+  private static void inspectLocation(Gson jsonParser, PrintWriter out, BufferedReader in, String id)
+      throws IOException {
+    HashMap<String, String> params = new HashMap<String, String>();
+    params.put("character_name", "tim");
+
+    HashMap<String, Object> mapa = new HashMap<String, Object>();
+    mapa.put("jsonrpc", "2.0");
+    mapa.put("method", "inspect_current_location");
+    mapa.put("params", params);
+    mapa.put("id", id);
+
+    out.println(jsonParser.toJson(mapa));
+
+    HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {
+    }.getType());
+
+    printServerResult(respuesta);
+  }
+
+  private static void pickObject(Gson jsonParser, PrintWriter out, BufferedReader in, String id) throws IOException {
+    HashMap<String, String> params = new HashMap<String, String>();
+    params.put("object", "trofeo");
+    params.put("character_name", "tim");
+
+    HashMap<String, Object> mapa = new HashMap<String, Object>();
+    mapa.put("jsonrpc", "2.0");
+    mapa.put("method", "take_object");
     mapa.put("params", params);
     mapa.put("id", id);
 
