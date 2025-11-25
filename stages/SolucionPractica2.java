@@ -43,7 +43,7 @@ public class SolucionPractica2 {
     params.put("npc", "sabio");
     params.put("character_name", "tim");
 
-    ExecutorService executor = Executors.newFixedThreadPool(20);
+    ExecutorService executor = Executors.newFixedThreadPool(10);
     List<Future<HashMap<String, Object>>> futures = new ArrayList<>();
 
     for (int i = 1; i < 7; i++) {

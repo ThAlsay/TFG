@@ -10,37 +10,52 @@
 
 ## Tabla de contenidos
 
-- [Introducción](#introducci%C3%B3n)
-- [La arquitectura de distribución cliente-servidor](#la-arquitectura-de-distribuci%C3%B3n-cliente-servidor)
-- [JSON-RPC](#json-rpc)
-- [Poner la teoría en práctica](#poner-la-teor%C3%ADa-en-pr%C3%A1ctica)
-  - [El cliente Java](#el-cliente-java)
-    - [Petición con parámetros](#petici%C3%B3n-con-par%C3%A1metros)
-    - [La función "printServerResult"](#la-funci%C3%B3n-printserverresult)
-  - [Poniéndolo en práctica](#poni%C3%A9ndolo-en-pr%C3%A1ctica)
 
-## Introducción
+- [Práctica 1](#práctica-1)
+  - [Tabla de contenidos](#tabla-de-contenidos)
+  - [Objetivo](#objetivo)
+  - [La arquitectura de distribución cliente-servidor](#la-arquitectura-de-distribución-cliente-servidor)
+  - [JSON-RPC](#json-rpc)
+      - [Sintáxis de JSON-RPC](#sintáxis-de-json-rpc)
+        - [Petición](#petición)
+        - [Respuesta](#respuesta)
+  - [Poner la teoría en práctica](#poner-la-teoría-en-práctica)
+    - [El servidor Elixir](#el-servidor-elixir)
+          - [Arquitectura del servidor](#arquitectura-del-servidor)
+    - [El cliente Java](#el-cliente-java)
+      - [Petición con parámetros](#petición-con-parámetros)
+      - [La función "printServerResult"](#la-función-printserverresult)
+    - [Ahora es tu turno](#ahora-es-tu-turno)
+          - [Tabla de primitivas](#tabla-de-primitivas)
 
-Durante esta práctica vamos a ver como funciona la arquitectura distribuida cliente-servidor, el protocolo JSON-RPC y como vamos a emplear estas dos tecnologías
-durante esta y las siguientes prácticas para intentar pasarnos un juego distribuido.
+## Objetivo
+
+Al finalizar esta práctica sabremos los fundamentos de la comunicación entre un cliente y un servidor, así como una idea del protocolo JSON-RPC. Con todos estos
+fundamentos programaremos un cliente en Java que nos va a permitir jugar a un juego distribuido.
 
 ## La arquitectura de distribución cliente-servidor
 
 En el contexto de los sistemas distribuidos, un sistema construido en base a una arquitectura cliente-servidor consta de dos elementos, bien nombrados en el propio nombre
 de la arquitectura, el cliente y el servidor. Hay que tener en cuenta que esto abarca cualquier multiplicidad de los elementos, un sistema con arquitectura cliente-servidor
 puede estar formado por un cliente y un servidor o dos clientes y un servidor o un cliente y tres servidores, y así con todas las combinaciones posibles dependiendo de las
-necesidades globale del sistema.
+necesidades globales del sistema.
 
 El servidor es la máquina o máquinas físicas o virtuales cuyo trabajo es recibir peticiones a través de un punto de acceso. La comunicación con el punto de acceso
 proporcionado por el servidor se realiza mediante uno o varios protocolos de transporte, los más conocidos son TCP (sobre el que se construye HTTP) y UDP.
 
+Todo servidor implementa un servicio, al cuál acceden los clientes mediante una interfaz que presenta el servidor satisfaciendo la función del servicio mediante
+funciones accesibles de diferentes formas (RPC, RMI, primitivas...).
+
 Al igual que el servidor el cliente puede ser también una máquina física o virtual o varias de ellas. Su trabajo es realizar peticiones al servidor que provocan
 una respuesta del mismo, estas respuestas pueden incluir una gran variedad de tipos, entre ellos respuestas de éxito, de rechazo o de error.
 
-![Ejemplos de arquitecturas distribuidas cliente-servidor](./images/cliente-servidor.jpg)
+![Ejemplos de arquitecturas distribuidas cliente-servidor](./images/cliente_servidor.jpg)
 
 La imagen superior muestra un par de ejemplos de arquitecturas distribuidas cliente-servidor. Se puede observar como tanto los clientes como los servidores pueden
 ser cualquier tipo de dispositivo con las capacidad necesarias.
+
+El patrón cliente-servidor se basa en el patrón de interacción petición-respuesta (R-R del inglés _request_-_response_). Dicho patrón puede ser síncrono o asíncrono,
+aunque, durante las prácticas, todo se desarrolla siguiendo el patrón R-R síncrono.
 
 ## JSON-RPC
 
@@ -53,9 +68,14 @@ El estándar del protocolo define como debe ser la estructura de los objetos pet
 
 Ambos objetos constan de un campo de versión, necesario en este caso ya que estaremos trabajando con la versión 2 de este protocolo.
 
-El objeto petición consta de un campo método (method) obligatorio en el que se indica el método que se quiere invocar en el servidor, un campo parámetros (params) opcional
+#### Sintáxis de JSON-RPC
+
+##### Petición
+
+El objeto petición implementa una petición al servidor en una estructura JSON con el formato estándar de JSON-RPC.
+Consta de un campo método (method) obligatorio en el que se indica el método que se quiere invocar en el servidor, un campo parámetros (params) opcional
 en el que se pasan elementos necesarios para el método invocado, el equivalente a los parámetros de una función en programación, y un campo identificador (id) el cual
-nosotros tomaremos como obligatorio y que, también en nuestro caso, será un string.
+nosotros tomaremos como obligatorio y que, también en nuestro caso, será un `string` de caracteres.
 
 ```json
 {
@@ -69,31 +89,61 @@ nosotros tomaremos como obligatorio y que, también en nuestro caso, será un st
 }
 ```
 
-El código JSON de arriba muestra un ejemplo de petición con parámetros.
+##### Respuesta
 
-El objeto respuesta por su parte consta de un campo resultado (result) si la petición ha sido correcta o, si la petición es incorrecta,
-un campo error con los motivos del mismo. Además devuelve el mismo identificador (id) que había recibido del objeto petición.
+El objeto respuesta implementa la respuesta que envía el servidor al cliente una vez la petición ha concluido, al ser un servidor síncrono siempre obtendremos una
+respuesta. Consta de un campo resultado (result) si la petición ha sido correcta o, si la petición es incorrecta, un campo error con los motivos del mismo.
+Además devuelve el mismo identificador (id) que había recibido del objeto petición.
 
 ```json
 {
   "version": "2.0",
-  "result": "resultado de la accion",
+  "result": "has viajado 3 dias a madrid",
   "id": "100"
 }
 ```
 
-El código JSON de arriba muestra un ejemplo de respuesta a una petición sin errores.
+Si la respuesta es errónea, el objeto respuesta tendrá la siguiente estructura:
+
+```json
+{
+  "version": "2.0",
+  "error": {
+    "code": -32600,
+    "message": "algo salio mal en el servidor"
+  },
+  "id": "100"
+}
+```
 
 Para profundizar sobre lo que se ha resumido arriba la especificación del mismo es corta y asequible y se puede encontrar en el siguiente enlace:
 https://www.jsonrpc.org/specification (inglés).
 
+Para saber más sobre JSON en el siguiente enlace se encuentra la especificación del mismo: https://www.json.org/json-es.html.
+
+Sobre RPC la página de wikipedia en inglés da una buena descripción del mismo: https://en.wikipedia.org/wiki/Remote_procedure_call (inglés).
+
 ## Poner la teoría en práctica
 
-Una vez entendidos los conceptos vamos a ponerlos en práctica. Durante las siguientes prácticas vamos a pasarnos un juego escrito en Elixir y que va a actuar como servidor
-(o servidores como veremos en prácticas posteriores).
+Con todo lo aprendido anteriormente podemos deducir que la interacción entre el cliente y el servidor sigue la premisa del diagrama de secuencia que se muestra
+a continuación.
 
-En prácticas posteriores nos adentraremos en su funcionamiento pero, de momento, vamos a enfocarnos en como jugar. Al actuar como un servidor vamos a necesitar un cliente
-(o clientes) que se comuniquen con él y nos permitan avanzar por el juego. Para esta labor vamos a escribir un cliente Java.
+![Diagrama de secuencia cliente-servidor](./images/cliente_servidor_secuencia_first_manual.jpg)
+
+Una vez entendidos los conceptos vamos a ponerlos en práctica. Durante las siguientes prácticas vamos a pasarnos un juego escrito en Elixir y que va a actuar como servidor
+(o servidores como veremos en prácticas posteriores) con el que nos comunicaremos mediantes clientes de Java.
+
+### El servidor Elixir
+
+Lo que llamamos servidor en realidad es la combinación de dos sistemas, un motor de juego que contiene toda la lógica de las partes que componen un juego y el juego, que
+es el servidor con el que nos comunicaremos durante las prácticas que lo requieran.
+
+El servidor es un sistema multienhebrado, es decir, permite múltiples conexiones al mismo tiempo, cuenta con un sistema de autenticación para los usuarios, que nosotros
+emplearemos para iniciar nuestros personajes, y maneja como cambia el estado del juego.
+
+###### Arquitectura del servidor
+
+![Arquitectura del servidor](./images/arquitectura_first_manual.jpg)
 
 ### El cliente Java
 
@@ -106,20 +156,24 @@ public class JavaClient {
     Gson jsonParser = new Gson();
     Socket socket = new Socket("localhost", 3000);
 
+    // Abrir el canal de comunicación con el servidor
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+    // Preparar los datos
     HashMap<String, Object> mapa = new HashMap<String, Object>();
     mapa.put("jsonrpc", "2.0");
     mapa.put("method", "info");
     mapa.put("id", "1");
 
+    // Enviar datos
     out.println(jsonParser.toJson(mapa));
 
+    // Obtener respuesta
     HashMap<String, Object> respuesta = jsonParser.fromJson(in.readLine(), new TypeToken<HashMap<String, Object>>() {}.getType());
 
-    printServerResult(respuesta);
-    socket.close();
+    printServerResult(respuesta); // Imprimir respuesta
+    socket.close(); // Cerrar el canal
   }
 
   private static void printServerResult(HashMap<String, Object> mapa) {
@@ -140,9 +194,9 @@ public class JavaClient {
 }
 ```
 
-Vamos a desgranar que es lo que estamos haciendo en el código de arriba.
+Vamos a profundizar en lo que estamos haciendo en el código de arriba.
 
-En primer lugar creamos un parser para transformar mapas de Java en JSON y viceversa.
+En primer lugar creamos un parser para transformar mapas de Java en JSON y viceversa. Su función es serializar/deserializar los mensajes enviados por red.
 
 ```java
 Gson jsonParser = new Gson();
@@ -203,22 +257,39 @@ Es un simple ejemplo de como se añadirían parámetros a una petición que los 
 
 #### La función "printServerResult"
 
-Esta función formatea el resultado que llega desde el servidor, comprobando si ha sido correcta o no. Siguiendo el estándar de JSON-RPC podemos darnos cuenta
-que hay dos posibilidades: Que el objeto traiga un campo resultado o que traiga un campo error.
+Esta función formatea el resultado que llega desde el servidor, comprobando si ha sido correcta o no. Siguiendo el estándar de JSON-RPC podemos darnos cuenta de
+que hay dos posibilidades:
 
-Teniendo en cuenta esto el formateador simplemente pedirá ambos campos y comprobará si hay un resultado, en caso que no halla, la petición habrá fallado y el
-campo error tendrá el motivo del mismo.
+1. Que el objeto traiga un campo resultado
+2. que traiga un campo error.
+
+Teniendo en cuenta esto el formateador simplemente extraerá ambos campos y comprobará si hay un resultado, en caso que no halla, la petición JSON habrá fallado y
+el campo error tendrá el motivo del mismo.
 
 Se proporciona esta función para que pueda ser reutilizada por cualquier cliente que sea necesario crear.
 
-### Poniéndolo en práctica
+### Ahora es tu turno
 
-Sabiendo cómo se crea un cliente para comunicarnos con el juego y como mandar peticiones con y sin parámetros vamos a ponerlo en práctica. Empleando
-la función descrita en el cliente de ejemplo utiliza los métodos necesarios para encontrar y equiparte una espada.
-Una vez equipada la espada busca al sabio en otra sala. Dejaremos esta práctica cuando encontremos al sabio.
+Para solidificar los conocimientos que hemos adquirido y que vamos a ir adquiriendo a lo largo de las siguientes prácticas vamos a jugar al ya mencionado juego.
 
-Para poder jugar necesitamos escoger un personaje mediante la utilidad "login" de "Utilities.java".
-Durante esta práctica vamos a jugar como Tim, si nos fijamos en "Utilities.java" veremos que también hay otro personaje llamado Tom. A Tom le veremos en
-la siguiente práctica.
+Como ya sabemos, nos vamos a comunicar con el juego mediante clientes de Java, ya que este actúa como un servidor. Mediante el cliente de Java mandaremos primitivas
+al juego en formato JSON mediante JSON-RPC para que este modifique el estado del juego de acuerdo a nuestra acciones. Para esta práctica es necesario saber que
+contamos con un personaje, llamado Tim, este se mueve por un mundo formado por habitaciones conectadas mediante conexiones, dentro de las habitaciones podemos encontrar
+NPCs, objetos o enemigos. Todos estos elementos tienen un nombre que emplearemos para referirnos a ellos en los parámetros de la petición si es necesario.
 
-Se puede hacer un cliente por petición o crear los clientes como funciones de un programa más grande que los ejecute todos en serie.
+
+Sabiendo cómo se crea un cliente para comunicarnos con el juego, como mandar peticiones con y sin parámetros y qué hace el juego cuando enviamos los mensajes vamos a
+ponerlo en práctica. Empleando las primitivas de la tabla utiliza los métodos necesarios para encontrar y equiparte una espada. Una vez equipada la espada viaja a la
+ubicación `habitacion_cueva_3`. Dejaremos esta práctica cuando lleguemos a la localización.
+
+Para poder jugar necesitamos escoger un personaje mediante la utilidad "login" de "Utilities.java". Durante estas prácticas vamos a jugar como Tim.
+
+###### Tabla de primitivas
+
+| Primitiva                | Respuesta / Acción              | Parámetros                  | Explicación parámetro                           |
+| ------------------------ | ------------------------------- | --------------------------- | ----------------------------------------------- |
+| inspect_current_location | estado de la ubicación actual   | character_name              | nombre del personaje con el que estamos jugando |
+| cross_connection         | cambia de estancia al personaje | connection / character_name | nombre de la conexión / nombre del personaje    |
+| take_object              | recoge un objeto de la estancia | object / character_name     | nombre del objeto / nombre del personaje        |
+| equip_object             | equipa el objeto al personaje   | object / character_name     | nombre del objeto / nombre del personaje        |
+| inspect_character        | estado del personaje            | character_name              | nombre del personaje                            |

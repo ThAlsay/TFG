@@ -183,7 +183,7 @@ defmodule Game.RpcHandler do
         response_wrapper(socket, "you can now play as #{character["name"]}", id)
 
       :error ->
-        error_wrapper(socket, 32001, "wrong username or password", id)
+        error_wrapper(socket, -32001, "wrong username or password", id)
     end
   end
 

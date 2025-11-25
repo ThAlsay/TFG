@@ -597,6 +597,9 @@ defmodule Engine.Character do
             new_state = %{new_state | weapon: object_name}
             {:noreply, new_state}
           end
+
+        true ->
+          {:noreply, state}
       end
     else
       {:noreply, state}
