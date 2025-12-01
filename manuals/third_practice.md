@@ -5,8 +5,8 @@
 | Curso:     | SISTEMAS DISTRIBUIDOS - Grado en Ingeniería Informática |
 | Libro:     | Enunciado 3: Modificación del motor Hephaestus.         |
 | Autor:     | SAYALERO BLAZQUEZ, ALONSO                               |
-| Fecha:     | sabado, 20 de septiembre de 2025                        |
-| Versión:   | 0.1                                                     |
+| Fecha:     | Lunes, 1 de Diciembre de 2025                           |
+| Versión:   | 1.0                                                     |
 
 ## Tabla de contenidos
 
@@ -59,8 +59,8 @@ end
 Otra de las características que lo diferencian de lenguajes como Java es que no tiene bucles. Para poder realizar un bucle en Elixir hay que emplear técnicas
 de recursividad para lograr el objetivo.
 
-Relevante para la práctica es también el hecho que la devolución del resultado de una función no requiere de una palabra reservada si no que será el resultado
-de la última evaluación del código de la misma. Por ejemplo:
+En Elixir todas las funciones devuelven el resultado de la última expresión evaluada. Esto quiere decir que no tenemos la palabra clave _return_ como en Java y que 
+tampoco tenemos funciones que no devuelven nada. Por ejemplo:
 
 ```elixir
 def devuelve_hola_string() do

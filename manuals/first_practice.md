@@ -5,8 +5,8 @@
 | Curso:     | SISTEMAS DISTRIBUIDOS - Grado en Ingeniería Informática                                              |
 | Libro:     | Enunciado 1: Introducción a los sistemas distribuidos. Arquitectura de distribución cliente-servidor |
 | Autor:     | SAYALERO BLAZQUEZ, ALONSO                                                                            |
-| Fecha:     | viernes, 19 de septiembre de 2025                                                                    |
-| Versión:   | 0.1                                                                                                  |
+| Fecha:     | Viernes, 21 de Noviembre de 2025                                                                     |
+| Versión:   | 1.0                                                                                                  |
 
 ## Tabla de contenidos
 

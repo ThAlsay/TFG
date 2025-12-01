@@ -5,7 +5,7 @@
 | Curso:     | SISTEMAS DISTRIBUIDOS - Grado en Ingeniería Informática |
 | Libro:     | Enunciado 2: Actores y colas de mensaje.                |
 | Autor:     | SAYALERO BLAZQUEZ, ALONSO                               |
-| Fecha:     | sabado, 20 de septiembre de 2025                        |
+| Fecha:     | Jueves, 20 de Noviembre de 2025                         |
 | Versión:   | 0.1                                                     |
 
 ## Tabla de contenidos
