@@ -78,10 +78,6 @@ defmodule Engine.Enemy do
     GenServer.call(name, :get_reward)
   end
 
-  def attack(name) do
-    GenServer.call(name, :get_attack_type)
-  end
-
   def is_alive?(name) do
     GenServer.call(name, :is_alive?)
   end

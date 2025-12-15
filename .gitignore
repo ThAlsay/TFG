@@ -26,3 +26,7 @@ tfg_umbrella/tmp/
 
 # Environment variables file
 .env
+
+# Web directory
+/web/node_modules
+/web/.astro
